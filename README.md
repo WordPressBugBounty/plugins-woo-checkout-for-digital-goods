@@ -1,0 +1,1 @@
+# plugins-woo-checkout-for-digital-goods
