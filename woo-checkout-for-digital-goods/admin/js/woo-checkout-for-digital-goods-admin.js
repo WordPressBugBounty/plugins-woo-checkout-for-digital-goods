@@ -189,7 +189,48 @@
             $('body').removeClass('feature-explanation-popup-visible');
         });
         /** Upgrade Dashboard Script End */
+
+        // Script for hide & show quick checkout btn row
+        toggleQuickChkBtnLabelRow();
+        $('input[name="wcdg_chk_details"], input[name="wcdg_chk_prod"]').change(function () {
+            toggleQuickChkBtnLabelRow();
+        });
+
+        // Script for hide & show add to cart btn row
+        hideShowFieldsOnToggle( 'input[name="wcdg_enable_cart_btn_label"]', '.wcdg_cart_btn_label_row' );
     });
+
+    // Script for hide & show quick checkout btn row
+    function toggleQuickChkBtnLabelRow() {
+        let wcdg_chk_details = $('input[name="wcdg_chk_details"]').is(':checked');
+        let wcdg_chk_prod = $('input[name="wcdg_chk_prod"]').is(':checked');
+        if ( wcdg_chk_details || wcdg_chk_prod ) {
+            $('.wcdg_chk_btn_label_row').show();
+        } else {
+            $('.wcdg_chk_btn_label_row').hide();
+        }
+    }
+
+    // Hide & show fields/inner rows based on checkbox ON & OFF
+    function hideShowFieldsOnToggle( checkbox, row ) {
+        // Script for hide row on load
+        let value = $(checkbox).is(':checked');
+        if ( value ) {
+            $(row).show();
+        } else {
+            $(row).hide();
+        }
+
+        // Script for hide row on change
+        $(checkbox).change(function () {
+            let checked = $(this).is(':checked');
+            if ( checked ) {
+                $(row).show();
+            } else {
+                $(row).hide();
+            }
+        });
+    }
 
     // Set cookies
     function setCookie(name, value, minutes) {
@@ -222,7 +263,6 @@
             plugin_id: '4703',
             plan_id: '7560',
             public_key:'pk_9edf804dccd14eabfd00ff503acaf',
-            image: 'https://www.thedotstore.com/wp-content/uploads/sites/1417/2023/10/WooCommerce-Checkout-For-Digital-Goods-Banner-New.png',
             coupon: couponCode,
             show_reviews: true,
             show_refund_badge: true

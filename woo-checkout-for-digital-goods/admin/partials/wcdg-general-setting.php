@@ -4,6 +4,7 @@
 if ( !defined( 'ABSPATH' ) ) {
     exit;
 }
+use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 require_once plugin_dir_path( __FILE__ ) . 'header/plugin-header.php';
 $allowed_tooltip_html = wp_kses_allowed_html( 'post' )['span'];
 ?>
@@ -34,6 +35,9 @@ if ( isset( $_POST['submit_setting'] ) ) {
         $get_wcdg_chk_order_note = filter_input( INPUT_POST, 'wcdg_chk_order_note', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
         $get_wcdg_chk_prod = filter_input( INPUT_POST, 'wcdg_chk_prod', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
         $get_wcdg_chk_details = filter_input( INPUT_POST, 'wcdg_chk_details', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $get_wcdg_chk_btn_label = filter_input( INPUT_POST, 'wcdg_chk_btn_label', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $get_wcdg_enable_cart_btn_label = filter_input( INPUT_POST, 'wcdg_enable_cart_btn_label', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $get_wcdg_cart_btn_label = filter_input( INPUT_POST, 'wcdg_cart_btn_label', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
         $get_wcdg_chk_on = filter_input( INPUT_POST, 'wcdg_chk_on', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
         $get_wcdg_user_role_field = filter_input(
             INPUT_POST,
@@ -60,6 +64,9 @@ if ( isset( $_POST['submit_setting'] ) ) {
         $general_setting_data['wcdg_chk_order_note'] = ( !empty( $get_wcdg_chk_order_note ) ? sanitize_text_field( $get_wcdg_chk_order_note ) : '' );
         $general_setting_data['wcdg_chk_prod'] = ( !empty( $get_wcdg_chk_prod ) ? sanitize_text_field( $get_wcdg_chk_prod ) : '' );
         $general_setting_data['wcdg_chk_details'] = ( !empty( $get_wcdg_chk_details ) ? sanitize_text_field( $get_wcdg_chk_details ) : '' );
+        $general_setting_data['wcdg_chk_btn_label'] = ( !empty( $get_wcdg_chk_btn_label ) ? sanitize_text_field( $get_wcdg_chk_btn_label ) : '' );
+        $general_setting_data['wcdg_enable_cart_btn_label'] = ( !empty( $get_wcdg_enable_cart_btn_label ) ? sanitize_text_field( $get_wcdg_enable_cart_btn_label ) : '' );
+        $general_setting_data['wcdg_cart_btn_label'] = ( !empty( $get_wcdg_cart_btn_label ) ? sanitize_text_field( $get_wcdg_cart_btn_label ) : '' );
         $general_setting_data['wcdg_chk_on'] = ( !empty( $get_wcdg_chk_on ) ? sanitize_text_field( $get_wcdg_chk_on ) : 'wcdg_down_virtual' );
         $general_setting_data['wcdg_user_role_field'] = ( !empty( $get_wcdg_user_role_field ) ? array_map( 'sanitize_text_field', $get_wcdg_user_role_field ) : '' );
         $general_setting_data['wcdg_allow_additional_field_update_flag'] = ( !empty( $get_wcdg_allow_additional_field_update_flag ) ? sanitize_text_field( $get_wcdg_allow_additional_field_update_flag ) : '' );
@@ -72,9 +79,34 @@ $wcdg_ch_field = ( isset( $wcdg_general_setting['wcdg_chk_field'] ) && !empty( $
 $wcdg_chk_order_note = ( isset( $wcdg_general_setting['wcdg_chk_order_note'] ) && !empty( $wcdg_general_setting['wcdg_chk_order_note'] ) ? 'checked' : '' );
 $wcdg_chk_prod = ( isset( $wcdg_general_setting['wcdg_chk_prod'] ) && !empty( $wcdg_general_setting['wcdg_chk_prod'] ) ? 'checked' : '' );
 $wcdg_chk_details = ( isset( $wcdg_general_setting['wcdg_chk_details'] ) && !empty( $wcdg_general_setting['wcdg_chk_details'] ) ? 'checked' : '' );
+$wcdg_chk_btn_label = ( isset( $wcdg_general_setting['wcdg_chk_btn_label'] ) && !empty( $wcdg_general_setting['wcdg_chk_btn_label'] ) ? $wcdg_general_setting['wcdg_chk_btn_label'] : '' );
+$wcdg_enable_cart_btn_label = ( isset( $wcdg_general_setting['wcdg_enable_cart_btn_label'] ) && !empty( $wcdg_general_setting['wcdg_enable_cart_btn_label'] ) ? 'checked' : '' );
+$wcdg_cart_btn_label = ( isset( $wcdg_general_setting['wcdg_cart_btn_label'] ) && !empty( $wcdg_general_setting['wcdg_cart_btn_label'] ) ? $wcdg_general_setting['wcdg_cart_btn_label'] : '' );
 $wcdg_chk_on = ( isset( $wcdg_general_setting['wcdg_chk_on'] ) && !empty( $wcdg_general_setting['wcdg_chk_on'] ) ? $wcdg_general_setting['wcdg_chk_on'] : 'wcdg_down_virtual' );
 $wcdg_user_role_field = ( isset( $wcdg_general_setting['wcdg_user_role_field'] ) && !empty( $wcdg_general_setting['wcdg_user_role_field'] ) ? $wcdg_general_setting['wcdg_user_role_field'] : '' );
 $wcdg_allow_additional_field_update_flag = ( isset( $wcdg_general_setting['wcdg_allow_additional_field_update_flag'] ) && !empty( $wcdg_general_setting['wcdg_allow_additional_field_update_flag'] ) ? 'checked' : '' );
+// Checkout block notice
+if ( class_exists( 'Automattic\\WooCommerce\\Blocks\\Utils\\CartCheckoutUtils' ) && CartCheckoutUtils::is_checkout_block_default() ) {
+    $hide_checkout_notice = filter_input( INPUT_GET, 'wcdg-hide-checkout-notice', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+    $checkout_notice_nonce = filter_input( INPUT_GET, '_wcdg_checkout_notice_nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+    if ( isset( $hide_checkout_notice ) && sanitize_text_field( $hide_checkout_notice ) === 'wcdg-hide-checkout-note' && wp_verify_nonce( sanitize_text_field( $checkout_notice_nonce ), 'wcdg_checkout_notices_nonce' ) ) {
+        // Set transient for three months
+        set_transient( 'wcdg-hide-checkout-notice', true, 3 * 30 * 24 * 60 * 60 );
+    }
+    /* Check transient, if available display notice */
+    if ( !get_transient( 'wcdg-hide-checkout-notice' ) ) {
+        ?>
+                <div class="wcdg-checkout-notice">
+                    <p><?php 
+        echo esc_html_e( 'The billing country field cannot be removed when using the new WooCommerce checkout blocks. If you want to remove it completely, switch to the classic shortcode-based checkout.', 'woo-checkout-for-digital-goods' );
+        ?></p>
+                    <a class="notice-dismiss" href="<?php 
+        echo esc_url( wp_nonce_url( add_query_arg( 'wcdg-hide-checkout-notice', 'wcdg-hide-checkout-note' ), 'wcdg_checkout_notices_nonce', '_wcdg_checkout_notice_nonce' ) );
+        ?>"></a>
+                </div>
+                <?php 
+    }
+}
 ?>
         <form method="POST" name="" action="">
             <?php 
@@ -136,8 +168,15 @@ foreach ( $wcdg_default_fields as $wcdg_field_k => $wcdg_field_v ) {
             $excluded = in_array( $wcdg_field_k, $wcdg_ch_field, true );
         }
     }
+    // Add disable class for country field with checkout block
+    $disable_country = '';
+    if ( class_exists( 'Automattic\\WooCommerce\\Blocks\\Utils\\CartCheckoutUtils' ) && CartCheckoutUtils::is_checkout_block_default() ) {
+        $disable_country = ( 'billing_country' === $wcdg_field_k ? 'disable-country-row' : '' );
+    }
     ?>
-                            <tr>
+                            <tr class="<?php 
+    echo esc_attr( $disable_country );
+    ?>">
                                 <td class="td_select"><input type="hidden" name="wcdg_chk_field[<?php 
     echo esc_attr( $wcdg_field_k );
     ?>][enable]" value="" /><input type="checkbox" name="wcdg_chk_field[<?php 
@@ -175,159 +214,228 @@ esc_html_e( 'Configuration', 'woo-checkout-for-digital-goods' );
             </div>
             <table class="form-table wcdg-table-outer wcdg-table-tooltip table-outer">
                 <tbody>
-                <tr valign="top">
-                    <th class="titledesc" scope="row">
-                        <label for="perfect_match_title">
-                            <?php 
-esc_html_e( 'Enable / Disable', 'woo-checkout-for-digital-goods' );
-?>
-                            <?php 
-echo wp_kses( wc_help_tip( esc_html__( 'Enable or Disable functionality of plugin', 'woo-checkout-for-digital-goods' ) ), array(
-    'span' => $allowed_tooltip_html,
-) );
-?>
-                        </label>
-                    </th>
-                    <td class="forminp">
-                        <label class="switch">
-                            <input type="checkbox" name="wcdg_status" value="on" <?php 
-echo esc_attr( $wcdg_status );
-?>>
-                            <div class="slider round"></div>
-                        </label>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th class="titledesc" scope="row">
-                        <label for="perfect_match_title">
-                            <?php 
-esc_html_e( 'Exclude order note', 'woo-checkout-for-digital-goods' );
-?>
-                            <?php 
-echo wp_kses( wc_help_tip( esc_html__( 'Remove order note from checkout page.', 'woo-checkout-for-digital-goods' ) ), array(
-    'span' => $allowed_tooltip_html,
-) );
-?>
-                        </label>
-                    </th>
-                    <td class="forminp">
-                        <label>
-                            <input type="checkbox" name="wcdg_chk_order_note" value="on" <?php 
-echo esc_attr( $wcdg_chk_order_note );
-?>>
-                        </label>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th class="titledesc" scope="row">
-                        <label for="perfect_match_title">
-                            <?php 
-esc_html_e( 'Quick checkout for shop page', 'woo-checkout-for-digital-goods' );
-?>
-                            <?php 
-echo wp_kses( wc_help_tip( esc_html__( 'Display Quick Checkout Button on Shop Page for Digital Product', 'woo-checkout-for-digital-goods' ) ), array(
-    'span' => $allowed_tooltip_html,
-) );
-?>
-                        </label>
-                    </th>
-                    <td class="forminp">
-                        <label >
-                            <input type="checkbox" name="wcdg_chk_prod" value="on" <?php 
-echo esc_attr( $wcdg_chk_prod );
-?>>
-                        </label>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th class="titledesc" scope="row">
-                        <label for="perfect_match_title">
-                            <?php 
-esc_html_e( 'Quick checkout for detail page', 'woo-checkout-for-digital-goods' );
-?>
-                            <?php 
-echo wp_kses( wc_help_tip( esc_html__( 'Display Quick Checkout Button on Product Details Page for Digital Product', 'woo-checkout-for-digital-goods' ) ), array(
-    'span' => $allowed_tooltip_html,
-) );
-?>        
-                        </label>
-                    </th>
-                    <td class="forminp">
-                        <label>
-                            <input type="checkbox" name="wcdg_chk_details" value="on" <?php 
-echo esc_attr( $wcdg_chk_details );
-?>>
-                        </label>
-                    </td>
-                </tr>
-                <?php 
-?>
-                    <tr valign="top">
-                        <th class="titledesc" scope="row">
-                            <label for="perfect_match_title"><?php 
-esc_html_e( 'Quick checkout on', 'woo-checkout-for-digital-goods' );
-?></label>
-                        </th>
-                        <td class="forminp">
-                            <input type="radio" name="wcdg_chk_on" value="wcdg_down_virtual" <?php 
-checked( $wcdg_chk_on, 'wcdg_down_virtual' );
-?>> <?php 
-esc_html_e( 'Quick Checkout for all downloadable and/or virtual products', 'woo-checkout-for-digital-goods' );
-?><br>
-                            <input disabled="disabled" type="radio" name="" value="" class="wcdg_read_only"> <?php 
-esc_html_e( 'Manually Quick Checkout List for Product/Category/Tag ', 'woo-checkout-for-digital-goods' );
-?> <span class="wcdg-pro-label"></span>
-                        </td>
-                    </tr>
                     <tr valign="top">
                         <th class="titledesc" scope="row">
                             <label for="perfect_match_title">
                                 <?php 
-esc_html_e( 'Select user role', 'woo-checkout-for-digital-goods' );
+esc_html_e( 'Status', 'woo-checkout-for-digital-goods' );
 ?>
-                                <span class="wcdg-pro-label"></span>
                                 <?php 
-echo wp_kses( wc_help_tip( esc_html__( 'Select user role which you want to enable this plugin.', 'woo-checkout-for-digital-goods' ) ), array(
+echo wp_kses( wc_help_tip( esc_html__( 'Enable or disable the plugin’s functionality. When enabled, selected checkout billing fields will be removed, and other settings will be set up.', 'woo-checkout-for-digital-goods' ) ), array(
     'span' => $allowed_tooltip_html,
 ) );
-?>        
+?>
                             </label>
                         </th>
                         <td class="forminp">
-                            <select name="wcdg_user_role_field[]" id="wcdg_user_role_field" disabled style="max-width: 350px;width: 100%;">
-                                <option value="in_pro"><?php 
-esc_html_e( 'Select a user role', 'woo-checkout-for-digital-goods' );
-?></option>
-                            </select>
+                            <label class="switch">
+                                <input type="checkbox" name="wcdg_status" value="on" <?php 
+echo esc_attr( $wcdg_status );
+?>>
+                                <div class="slider round"></div>
+                            </label>
                         </td>
                     </tr>
-                <?php 
-?>
-                <?php 
+                    <?php 
 ?>
                         <tr valign="top">
                             <th class="titledesc" scope="row">
                                 <label for="perfect_match_title">
                                     <?php 
-esc_html_e( 'Update on thank you page', 'woo-checkout-for-digital-goods' );
+esc_html_e( 'Select User Role', 'woo-checkout-for-digital-goods' );
 ?>
                                     <span class="wcdg-pro-label"></span>
                                     <?php 
-echo wp_kses( wc_help_tip( esc_html__( 'It will show button for the update user information on thank you page', 'woo-checkout-for-digital-goods' ) ), array(
+echo wp_kses( wc_help_tip( esc_html__( 'Choose the user roles for which the plugin\'s functionality should be enabled.', 'woo-checkout-for-digital-goods' ) ), array(
     'span' => $allowed_tooltip_html,
 ) );
 ?>        
                                 </label>
                             </th>
                             <td class="forminp">
+                                <select name="wcdg_user_role_field[]" id="wcdg_user_role_field" disabled  style="max-width: 350px;width: 100%;">
+                                    <option value="in_pro"><?php 
+esc_html_e( 'Select a user role', 'woo-checkout-for-digital-goods' );
+?></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <?php 
+?>
+                    <tr valign="top">
+                        <th class="titledesc" scope="row">
+                            <label for="perfect_match_title">
+                                <?php 
+esc_html_e( 'Quick Checkout on Shop Page', 'woo-checkout-for-digital-goods' );
+?>
+                                <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Display a "Quick Checkout" button on the shop page for digital products.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label >
+                                <input type="checkbox" name="wcdg_chk_prod" value="on" <?php 
+echo esc_attr( $wcdg_chk_prod );
+?>>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th class="titledesc" scope="row">
+                            <label for="perfect_match_title">
+                                <?php 
+esc_html_e( 'Quick Checkout on Product Page', 'woo-checkout-for-digital-goods' );
+?>
+                                <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Show a "Quick Checkout" button on the product details page for digital products.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>        
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label>
+                                <input type="checkbox" name="wcdg_chk_details" value="on" <?php 
+echo esc_attr( $wcdg_chk_details );
+?>>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr valign="top" class="wcdg_chk_btn_label_row wcdg-inner-setting">
+                        <th class="titledesc" scope="row">
+                            <label for="perfect_match_title">
+                                <?php 
+esc_html_e( 'Button Label', 'woo-checkout-for-digital-goods' );
+?>
+                                <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Customize the label text for the "Quick Checkout" button.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>        
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label>
+                                <input type="text" name="wcdg_chk_btn_label" value="<?php 
+echo esc_attr( $wcdg_chk_btn_label );
+?>" placeholder="<?php 
+esc_attr_e( 'Enter Button Label', 'woo-checkout-for-digital-goods' );
+?>">
+                            </label>
+                        </td>
+                    </tr>
+                    <?php 
+?>
+                        <tr valign="top" class="wcdg_chk_btn_label_row wcdg-inner-setting">
+                            <th class="titledesc" scope="row">
+                                <label for="perfect_match_title"><?php 
+esc_html_e( 'Quick Checkout On', 'woo-checkout-for-digital-goods' );
+?></label>
+                            </th>
+                            <td class="forminp">
+                                <input type="radio" name="wcdg_chk_on" value="wcdg_down_virtual" <?php 
+checked( $wcdg_chk_on, 'wcdg_down_virtual' );
+?>> <?php 
+esc_html_e( 'Apply quick checkout to all downloadable and/or virtual products', 'woo-checkout-for-digital-goods' );
+?><br>
+                                <input disabled="disabled" type="radio" name="" value="" class="wcdg_read_only"> <?php 
+esc_html_e( 'To manually select products, categories, or tags, ', 'woo-checkout-for-digital-goods' );
+?> <span class="wcdg-pro-label"></span>
+                            </td>
+                        </tr>
+                        <?php 
+?>
+                    <tr valign="top">
+                        <th class="titledesc" scope="row">
+                            <label for="perfect_match_title">
+                                <?php 
+esc_html_e( 'Add to Cart Button Label', 'woo-checkout-for-digital-goods' );
+?>
+                                <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Enable this option to modify the default "Add to Cart" button label.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>        
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label>
+                                <input type="checkbox" name="wcdg_enable_cart_btn_label" value="on" <?php 
+echo esc_attr( $wcdg_enable_cart_btn_label );
+?>>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr valign="top" class="wcdg_cart_btn_label_row wcdg-inner-setting">
+                        <th class="titledesc" scope="row">
+                            <label for="perfect_match_title">
+                                <?php 
+esc_html_e( 'Button Label', 'woo-checkout-for-digital-goods' );
+?>
+                                <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Set a custom label for the "Add to Cart" button.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>        
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label>
+                                <input type="text" name="wcdg_cart_btn_label" value="<?php 
+echo esc_attr( $wcdg_cart_btn_label );
+?>" placeholder="<?php 
+esc_attr_e( 'Enter Button Label', 'woo-checkout-for-digital-goods' );
+?>">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th class="titledesc" scope="row">
+                            <label for="perfect_match_title">
+                                <?php 
+esc_html_e( 'Exclude Order Note', 'woo-checkout-for-digital-goods' );
+?>
+                                <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Check this option to remove the optional "Order Notes" field from the checkout page.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label>
+                                <input type="checkbox" name="wcdg_chk_order_note" value="on" <?php 
+echo esc_attr( $wcdg_chk_order_note );
+?>>
+                            </label>
+                        </td>
+                    </tr>
+                    <?php 
+?>
+                        <tr valign="top">
+                            <th class="titledesc" scope="row">
+                                <label for="perfect_match_title">
+                                    <?php 
+esc_html_e( 'Update on Thank You Page', 'woo-checkout-for-digital-goods' );
+?>
+                                    <span class="wcdg-pro-label"></span>
+                                    <?php 
+echo wp_kses( wc_help_tip( esc_html__( 'Display a button on the Thank You page to allow users to update their information.', 'woo-checkout-for-digital-goods' ) ), array(
+    'span' => $allowed_tooltip_html,
+) );
+?>
+                                </label>
+                            </th>
+                            <td class="forminp">
                                 <label>
-                                    <input type="checkbox" name="wcdg_allow_additional_field_update_flag" disabled value="on" <?php 
-echo esc_attr( $wcdg_allow_additional_field_update_flag );
-?> class="wcdg_read_only">
+                                    <input type="checkbox" name="wcdg_allow_additional_field_update_flag" disabled value="on" class="wcdg_read_only">
                                 </label>
                             </td>
                         </tr>
-                    <?php 
+                        <?php 
 ?>
                 </tbody>
             </table>

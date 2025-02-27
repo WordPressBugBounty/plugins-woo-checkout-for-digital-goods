@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Digital Goods for WooCommerce Checkout\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-13 12:55+0530\n"
-"PO-Revision-Date: 2024-08-28 11:23+0000\n"
+"PO-Revision-Date: 2025-02-24 11:32+0000\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
@@ -62,6 +62,20 @@ msgstr ""
 msgid "Activate Plugin"
 msgstr ""
 
+#: public/class-woo-checkout-for-digital-goods-public.php:733
+msgid "Add to cart"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:333
+msgid "Add to Cart Button Label"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:294
+#: admin/partials/wcdg-general-setting.php:310
+#: admin/partials/wcdg-general-setting.php:323
+msgid "Apply quick checkout to all downloadable and/or virtual products"
+msgstr ""
+
 #: admin/partials/dots-plugin-setup-wizard.php:92
 msgid "Astra"
 msgstr ""
@@ -76,8 +90,13 @@ msgstr ""
 msgid "Be our friend on"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:461
+#: admin/class-woo-checkout-for-digital-goods-admin.php:397
 msgid "Blank .json file uploaded."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:274
+#: admin/partials/wcdg-general-setting.php:346
+msgid "Button Label"
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:74
@@ -120,11 +139,24 @@ msgid ""
 "returns by upgrading to premium!"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:73
+#: admin/partials/wcdg-general-setting.php:360
+msgid ""
+"Check this option to remove the optional \"Order Notes\" field from the "
+"checkout page."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:106
 msgid "Checkout Billing Fields"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:196
+#: admin/partials/wcdg-general-setting.php:190
+#: admin/partials/wcdg-general-setting.php:215
+#: admin/partials/wcdg-general-setting.php:233
+msgid ""
+"Choose the user roles for which the plugin's functionality should be enabled."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:298
 msgid "Click Here"
 msgstr ""
 
@@ -141,7 +173,7 @@ msgid ""
 "Commonly Excluded Fields are Company Name, Address Line 2, Order note, etc."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:125
+#: admin/partials/wcdg-general-setting.php:164
 msgid "Configuration"
 msgstr ""
 
@@ -156,11 +188,15 @@ msgstr ""
 msgid "Customer Profile Image"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:419
+#: admin/partials/wcdg-general-setting.php:275
+msgid "Customize the label text for the \"Quick Checkout\" button."
+msgstr ""
+
+#: admin/class-woo-checkout-for-digital-goods-admin.php:355
 msgid "Data has been Exported!"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:464
+#: admin/class-woo-checkout-for-digital-goods-admin.php:400
 msgid "Data has been Imported!"
 msgstr ""
 
@@ -176,13 +212,17 @@ msgstr ""
 msgid "Discover Our Top Key Features"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:173
+#: admin/partials/wcdg-general-setting.php:249
 msgid ""
-"Display Quick Checkout Button on Product Details Page for Digital Product"
+"Display a \"Quick Checkout\" button on the shop page for digital products."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:160
-msgid "Display Quick Checkout Button on Shop Page for Digital Product"
+#: admin/partials/wcdg-general-setting.php:377
+#: admin/partials/wcdg-general-setting.php:394
+#: admin/partials/wcdg-general-setting.php:412
+msgid ""
+"Display a button on the Thank You page to allow users to update their "
+"information."
 msgstr ""
 
 #: admin/partials/dots-plugin-setup-wizard.php:90
@@ -193,7 +233,7 @@ msgstr ""
 msgid "Do you offer support for the plugin? What’s it like?"
 msgstr ""
 
-#: includes/class-woo-checkout-for-digital-goods.php:238
+#: includes/class-woo-checkout-for-digital-goods.php:242
 msgid "Docs"
 msgstr ""
 
@@ -222,10 +262,6 @@ msgid ""
 "unnecessary, and let your buyers make their own purchasing decisions."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:132
-msgid "Enable / Disable"
-msgstr ""
-
 #: admin/partials/dots-upgrade-dashboard.php:83
 msgid ""
 "Enable customers to complete their purchase directly from the shop or "
@@ -233,12 +269,18 @@ msgid ""
 "experience."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:133
-msgid "Enable or Disable functionality of plugin"
+#: admin/partials/wcdg-general-setting.php:172
+msgid ""
+"Enable or disable the plugin’s functionality. When enabled, selected "
+"checkout billing fields will be removed, and other settings will be set up."
 msgstr ""
 
 #: admin/partials/dots-upgrade-popup.php:58
 msgid "Enable quick checkout fields for specific user roles."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:334
+msgid "Enable this option to modify the default \"Add to Cart\" button label."
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:59
@@ -247,20 +289,22 @@ msgid ""
 "process, improving user experience and boosting conversions."
 msgstr ""
 
+#: admin/partials/wcdg-general-setting.php:280
+#: admin/partials/wcdg-general-setting.php:352
+msgid "Enter Button Label"
+msgstr ""
+
 #: admin/partials/dots-upgrade-dashboard.php:46
 msgid "Exclude Fields During Checkout"
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:94
+#: admin/partials/wcdg-general-setting.php:359
 msgid "Exclude Order Note"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:146
-msgid "Exclude order note"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:81
-#: admin/partials/wcdg-general-setting.php:90
+#: admin/partials/wcdg-general-setting.php:114
+#: admin/partials/wcdg-general-setting.php:123
 msgid "Excluded"
 msgstr ""
 
@@ -322,7 +366,7 @@ msgstr ""
 msgid "Great for website owners with a single WooCommerce Site"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:212
+#: admin/partials/wcdg-general-setting.php:198
 msgid "Guest / Not logged In"
 msgstr ""
 
@@ -403,11 +447,6 @@ msgid ""
 "data transfer, and ensures consistency across different environments."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:294
-#: admin/partials/wcdg-general-setting.php:310
-msgid "It will show button for the update user information on thank you page"
-msgstr ""
-
 #: admin/partials/dots-upgrade-dashboard.php:226
 msgid "Jevor B."
 msgstr ""
@@ -416,8 +455,8 @@ msgstr ""
 msgid "knowledge base"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:79
-#: admin/partials/wcdg-general-setting.php:88
+#: admin/partials/wcdg-general-setting.php:112
+#: admin/partials/wcdg-general-setting.php:121
 msgid "Label"
 msgstr ""
 
@@ -437,12 +476,6 @@ msgstr ""
 msgid "Localization"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:196
-#: admin/partials/wcdg-general-setting.php:228
-#: admin/partials/wcdg-general-setting.php:253
-msgid "Manually Quick Checkout List for Product/Category/Tag "
-msgstr ""
-
 #: admin/partials/dots-plugin-setup-wizard.php:94
 msgid "Medium"
 msgstr ""
@@ -452,12 +485,12 @@ msgid "month"
 msgstr ""
 
 #: admin/partials/header/plugin-header.php:74
-#: public/class-woo-checkout-for-digital-goods-public.php:544
+#: public/class-woo-checkout-for-digital-goods-public.php:798
 msgid "My Account"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:78
-#: admin/partials/wcdg-general-setting.php:87
+#: admin/partials/wcdg-general-setting.php:111
+#: admin/partials/wcdg-general-setting.php:120
 msgid "Name"
 msgstr ""
 
@@ -493,12 +526,12 @@ msgstr ""
 msgid "Personal Plan"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:80
-#: admin/partials/wcdg-general-setting.php:89
+#: admin/partials/wcdg-general-setting.php:113
+#: admin/partials/wcdg-general-setting.php:122
 msgid "Placeholder"
 msgstr ""
 
-#: public/class-woo-checkout-for-digital-goods-public.php:539
+#: public/class-woo-checkout-for-digital-goods-public.php:793
 msgid ""
 "Please check your email for login details and update your remaining billing "
 "details."
@@ -516,11 +549,11 @@ msgstr ""
 msgid "Please select at least one tag..!!"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:444
+#: admin/class-woo-checkout-for-digital-goods-admin.php:380
 msgid "Please upload a file to import"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:451
+#: admin/class-woo-checkout-for-digital-goods-admin.php:387
 msgid "Please upload a valid .json file"
 msgstr ""
 
@@ -546,39 +579,31 @@ msgid "Products"
 msgstr ""
 
 #: admin/partials/header/plugin-header.php:98
-#: public/class-woo-checkout-for-digital-goods-public.php:278
-#: public/class-woo-checkout-for-digital-goods-public.php:425
-#: public/class-woo-checkout-for-digital-goods-public.php:454
-#: public/class-woo-checkout-for-digital-goods-public.php:500
+#: public/class-woo-checkout-for-digital-goods-public.php:394
+#: public/class-woo-checkout-for-digital-goods-public.php:652
 msgid "Quick Checkout"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:192
-#: admin/partials/wcdg-general-setting.php:227
-#: admin/partials/wcdg-general-setting.php:252
-msgid "Quick Checkout for all downloadable and/or virtual products"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:172
-msgid "Quick checkout for detail page"
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:70
 msgid "Quick Checkout for Products, Categories & Tags"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:159
-msgid "Quick checkout for shop page"
-msgstr ""
-
 #: admin/partials/dots-upgrade-dashboard.php:82
 msgid "Quick Checkout from Shop or Product Details Page"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:187
-#: admin/partials/wcdg-general-setting.php:224
-#: admin/partials/wcdg-general-setting.php:249
-msgid "Quick checkout on"
+#: admin/partials/wcdg-general-setting.php:289
+#: admin/partials/wcdg-general-setting.php:307
+#: admin/partials/wcdg-general-setting.php:320
+msgid "Quick Checkout On"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:261
+msgid "Quick Checkout on Product Page"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:248
+msgid "Quick Checkout on Shop Page"
 msgstr ""
 
 #: admin/partials/wcdg-information-page.php:21
@@ -596,10 +621,6 @@ msgstr ""
 
 #: admin/partials/wcdg-get-started-page.php:27
 msgid "Read the Setup Guide"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:147
-msgid "Remove order note from checkout page."
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:58
@@ -628,8 +649,8 @@ msgid "Select a tag"
 msgstr ""
 
 #: admin/class-woo-checkout-for-digital-goods-admin.php:86
-#: admin/partials/wcdg-general-setting.php:241
-#: admin/partials/wcdg-general-setting.php:266
+#: admin/partials/wcdg-general-setting.php:220
+#: admin/partials/wcdg-general-setting.php:238
 msgid "Select a user role"
 msgstr ""
 
@@ -649,16 +670,14 @@ msgstr ""
 msgid "Select Tag"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:203
-#: admin/partials/wcdg-general-setting.php:234
-#: admin/partials/wcdg-general-setting.php:259
-msgid "Select user role"
+#: admin/partials/wcdg-general-setting.php:189
+#: admin/partials/wcdg-general-setting.php:213
+#: admin/partials/wcdg-general-setting.php:231
+msgid "Select User Role"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:204
-#: admin/partials/wcdg-general-setting.php:236
-#: admin/partials/wcdg-general-setting.php:261
-msgid "Select user role which you want to enable this plugin."
+#: admin/partials/wcdg-general-setting.php:347
+msgid "Set a custom label for the \"Add to Cart\" button."
 msgstr ""
 
 #: admin/partials/dots-upgrade-popup.php:59
@@ -672,7 +691,7 @@ msgstr ""
 #: admin/partials/header/plugin-header.php:104
 #: admin/partials/wcdg-quick-checkout.php:20
 #: admin/partials/wcdg-quick-checkout.php:78
-#: includes/class-woo-checkout-for-digital-goods.php:237
+#: includes/class-woo-checkout-for-digital-goods.php:241
 msgid "Settings"
 msgstr ""
 
@@ -680,8 +699,10 @@ msgstr ""
 msgid "Shop Plugins"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:278
-msgid "Show button for the update user information on thank you page"
+#: admin/partials/wcdg-general-setting.php:262
+msgid ""
+"Show a \"Quick Checkout\" button on the product details page for digital "
+"products."
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:71
@@ -695,6 +716,10 @@ msgstr ""
 msgid "Social Media"
 msgstr ""
 
+#: admin/partials/wcdg-general-setting.php:171
+msgid "Status"
+msgstr ""
+
 #: admin/partials/dots-plugin-setup-wizard.php:26
 msgid ""
 "Streamline WooCommerce Checkout for Digital Goods - Boost Sales, Simplify, "
@@ -706,7 +731,7 @@ msgid "Suggest"
 msgstr ""
 
 #: admin/partials/header/plugin-header.php:56
-#: includes/class-woo-checkout-for-digital-goods.php:239
+#: includes/class-woo-checkout-for-digital-goods.php:243
 msgid "Support"
 msgstr ""
 
@@ -739,6 +764,13 @@ msgid ""
 "The ability to import and export configurations in-store simplifies the "
 "process of launching a new store version, migrating data, or creating "
 "backups."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:96
+msgid ""
+"The billing country field cannot be removed when using the new WooCommerce "
+"checkout blocks. If you want to remove it completely, switch to the classic "
+"shortcode-based checkout."
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:98
@@ -780,6 +812,12 @@ msgid ""
 "tutorials."
 msgstr ""
 
+#: admin/partials/wcdg-general-setting.php:298
+#: admin/partials/wcdg-general-setting.php:311
+#: admin/partials/wcdg-general-setting.php:324
+msgid "To manually select products, categories, or tags, "
+msgstr ""
+
 #: admin/partials/dots-upgrade-dashboard.php:216
 msgid ""
 "Tried other Woocommerce checkout form field editors, too complicated for "
@@ -805,10 +843,10 @@ msgstr ""
 msgid "Unlock Premium Features with a %s%% Discount!"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:277
-#: admin/partials/wcdg-general-setting.php:292
-#: admin/partials/wcdg-general-setting.php:308
-msgid "Update on thank you page"
+#: admin/partials/wcdg-general-setting.php:376
+#: admin/partials/wcdg-general-setting.php:392
+#: admin/partials/wcdg-general-setting.php:410
+msgid "Update on Thank You Page"
 msgstr ""
 
 #: admin/partials/dots-upgrade-popup.php:65
@@ -901,8 +939,8 @@ msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:256
 msgid ""
-"Yes! You can read our %s or submit a %s. We are very responsive and strive "
-"to do our best to help you."
+"Yes! You can read our %1$s or submit a %2$s. We are very responsive and "
+"strive to do our best to help you."
 msgstr ""
 
 #: admin/partials/dots-plugin-setup-wizard.php:42

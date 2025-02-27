@@ -29,6 +29,13 @@ body a,body a:hover{color:var(--dots-primary);outline:none!important;-webkit-box
 .dots-section-left .form-table th{width:285px;}
 .dots-settings-inner-main .quick-checkout{display:block;}
 .wcdg-main-table table.table-outer ul{margin:0}
+.wcdg-main-left-section table.table-outer  .wcdg-inner-setting{background-color:#f5f5f5;}
+.wcdg-main-left-section .disable-country-row{opacity:0.5;pointer-events:none;}
+
+.wcdg-checkout-notice{background:#fff;border:1px solid #c3c4c7;border-left-color:#dba617;border-left-width:4px;box-shadow:0 1px 1px rgba(0,0,0,.04);margin:5px 0 25px;padding:1px 12px;position:relative;}
+.wcdg-checkout-notice p{margin:.5em 0;padding:2px;}
+.wcdg-checkout-notice .notice-dismiss{position:absolute;top:0;right:1px;border:none;margin:0;padding:9px;background:0 0;color:#787c82;cursor:pointer;}
+.wcdg-checkout-notice .notice-dismiss::before{background:0 0;color:#787c82;content:"\f153";display:block;font:normal 16px / 20px dashicons;speak:never;height:20px;text-align:center;width:20px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 
 /* Table style with tooltip */
 .dots-settings-inner-main .wcdg-table-tooltip tr label:not(.forminp label){display:block;position:relative;}

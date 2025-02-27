@@ -4,11 +4,11 @@ Plugin URI: https://wordpress.org/plugins/woo-checkout-for-digital-goods/
 Author: Thedotstore
 Author URI: https://www.thedotstore.com/
 Contributors: dots, niravcse006
-Stable tag: 3.8.0
-Tags: Woocommerce Checkout, Digital Goods, remove billing fields, checkout fields, Checkout for Digital Goods.
+Stable tag: 3.8.1
+Tags: Woocommerce Checkout, Digital Goods, remove billing fields, checkout fields, Checkout for Digital Goods
 Requires at least: 5.0
-Tested up to: 6.6.1
-WC tested up to: 9.2.3
+Tested up to: 6.7.2
+WC tested up to: 9.7.0
 Copyright: (c) 2015-2022 Thedotstore all rights reserved (support@thedotstore.com)
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -248,6 +248,14 @@ Ans: It is compatible with WooCommerce versions 2.6 and higher.
 Automatic updates should work great for you.  As always, though, we recommend backing up your site prior to making any updates just to be sure nothing goes wrong.
 
 == Changelog ==
+= 3.8.1 =
+* [New] – Added a new option to change the "Add to Cart" button label
+* [New] – Added a new option to change the "Quick Checkout" button label
+* [Enhancement] – Tested plugin compatibility with Bricks Builder theme
+* [Enhancement] – Plugin compatibility with WooCommerce Cart and Checkout blocks
+* [Enhancement] – Compatible with WooCommerce 9.7.x
+* [Enhancement] – Compatible with WordPress 6.7.x
+
 = 3.8.0 =
 * [Enhancement] – Plugin UI enhancement
 * [Enhancement] – Compatible with WooCommerce 9.2.x

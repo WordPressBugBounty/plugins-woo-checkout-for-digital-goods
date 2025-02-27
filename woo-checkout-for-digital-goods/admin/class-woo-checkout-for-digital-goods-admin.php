@@ -511,6 +511,7 @@ class Woo_Checkout_For_Digital_Goods_Admin {
                     );
                 } else {
                     $response = wp_remote_get( $query_url );
+                    //phpcs:ignore
                 }
                 if ( !is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
                     update_option( 'wcdg_data_submited_in_sendiblue', '1' );

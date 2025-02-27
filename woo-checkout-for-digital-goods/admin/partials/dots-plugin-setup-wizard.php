@@ -103,7 +103,7 @@ $activate_free_plugin = !empty($require_license) && 'false' === $require_license
 						<ul class="wizard-social-list">
 							<li><a target="_blank" href="<?php echo esc_url( 'https://www.facebook.com/thedotstore16/' ); ?>"><span class="dashicons dashicons-facebook-alt"></span></a></li>
 							<li><a target="_blank" href="<?php echo esc_url( 'https://twitter.com/thedotstore' ); ?>"><span class="dashicons dashicons-twitter"></span></a></li>
-							<li><a target="_blank" href="<?php echo esc_url( 'https://www.youtube.com/@DotStore16' ); ?>"><span class="dashicons dashicons-youtube"></span></a></li>
+							<li><a target="_blank" href="<?php echo esc_url( 'https://www.youtube.com/@DotStore16?sub_confirmation=1' ); ?>"><span class="dashicons dashicons-youtube"></span></a></li>
 							<li><a target="_blank" href="<?php echo esc_url( 'https://www.linkedin.com/company/dotstore16' ); ?>"><span class="dashicons dashicons-linkedin"></span></a></li>
 						</ul>
 					</div>

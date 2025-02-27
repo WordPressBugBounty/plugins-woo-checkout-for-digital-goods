@@ -253,7 +253,7 @@ $plugin_key_features = array(
 						<p>
 						<?php 
 							echo sprintf(
-							    esc_html__('Yes! You can read our %s or submit a %s. We are very responsive and strive to do our best to help you.', 'woo-checkout-for-digital-goods'),
+							    esc_html__('Yes! You can read our %1$s or submit a %2$s. We are very responsive and strive to do our best to help you.', 'woo-checkout-for-digital-goods'),
 							    '<a href="' . esc_url('https://docs.thedotstore.com/collection/165-digital-goods-for-checkout') . '" target="_blank">' . esc_html__('knowledge base', 'woo-checkout-for-digital-goods') . '</a>',
 							    '<a href="' . esc_url('https://www.thedotstore.com/support-ticket/') . '" target="_blank">' . esc_html__('support ticket', 'woo-checkout-for-digital-goods') . '</a>',
 							);

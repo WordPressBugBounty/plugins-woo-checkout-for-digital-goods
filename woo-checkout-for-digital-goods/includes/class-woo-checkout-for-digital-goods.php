@@ -57,7 +57,7 @@ class Woo_Checkout_For_Digital_Goods {
      */
     public function __construct() {
         $this->plugin_name = 'woo-checkout-for-digital-goods';
-        $this->version = '3.8.0';
+        $this->version = WCDG_PLUGIN_VERSION;
         $this->load_dependencies();
         $this->set_locale();
         $this->define_public_hooks();
@@ -67,7 +67,7 @@ class Woo_Checkout_For_Digital_Goods {
             "{$prefix}plugin_action_links_" . WCDG_PLUGIN_BASENAME,
             array($this, 'plugin_action_links'),
             10,
-            4
+            1
         );
         add_filter(
             'plugin_row_meta',
@@ -151,6 +151,20 @@ class Woo_Checkout_For_Digital_Goods {
                 'wcdg_override_checkout_fields',
                 1000
             );
+            // Checkout block compatibility code
+            $this->loader->add_filter(
+                'woocommerce_get_country_locale',
+                $plugin_public,
+                'wcdg_override_checkout_fields_with_blocks',
+                1000
+            );
+            $this->loader->add_filter( 'woocommerce_localisation_address_formats', $plugin_public, 'wcdg_change_checkout_block_address_format' );
+            $this->loader->add_action(
+                'woocommerce_blocks_checkout_block_registration',
+                $plugin_public,
+                'wcdg_update_default_fields_data_with_block',
+                10
+            );
             $woo_checkout_button_product = ( isset( $woo_checkout_unserlize_array['wcdg_chk_details'] ) ? $woo_checkout_unserlize_array['wcdg_chk_details'] : '' );
             if ( !empty( $woo_checkout_button_product ) ) {
                 $this->loader->add_action( 'woocommerce_after_add_to_cart_button', $plugin_public, 'wcdg_add_quick_checkout_after_add_to_cart_product_page' );
@@ -164,6 +178,20 @@ class Woo_Checkout_For_Digital_Goods {
                     10
                 );
             }
+            $this->loader->add_filter(
+                'woocommerce_product_single_add_to_cart_text',
+                $plugin_public,
+                'wcdg_change_add_to_cart_btn_text',
+                10,
+                2
+            );
+            $this->loader->add_filter(
+                'woocommerce_product_add_to_cart_text',
+                $plugin_public,
+                'wcdg_change_add_to_cart_btn_text',
+                10,
+                2
+            );
             $this->loader->add_filter(
                 'woocommerce_thankyou',
                 $plugin_public,
@@ -210,7 +238,7 @@ class Woo_Checkout_For_Digital_Goods {
             'configure' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( array(
                 'page' => 'wcdg-general-setting',
             ), admin_url( 'admin.php' ) ) ), __( 'Settings', 'woo-checkout-for-digital-goods' ) ),
-            'docs'      => sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( 'https://docs.thedotstore.com/collection/165-digital-goods-for-woocommerce-checkout' ), __( 'Docs', 'woo-checkout-for-digital-goods' ) ),
+            'docs'      => sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( 'https://docs.thedotstore.com/collection/165-digital-goods-for-checkout' ), __( 'Docs', 'woo-checkout-for-digital-goods' ) ),
             'support'   => sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( 'www.thedotstore.com/support' ), __( 'Support', 'woo-checkout-for-digital-goods' ) ),
         );
         // add the links to the front of the actions list

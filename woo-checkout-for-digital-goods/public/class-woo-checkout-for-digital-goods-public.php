@@ -12,6 +12,9 @@ if ( !defined( 'ABSPATH' ) ) {
  * @package    Woo_Checkout_For_Digital_Goods
  * @subpackage Woo_Checkout_For_Digital_Goods/public
  */
+use Automattic\WooCommerce\Blocks\Package;
+use Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry;
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
 class Woo_Checkout_For_Digital_Goods_Public {
     /**
      * The ID of this plugin.
@@ -56,6 +59,8 @@ class Woo_Checkout_For_Digital_Goods_Public {
             $this->version,
             'all'
         );
+        // Add inline style for hide order notes
+        $this->wcdg_hide_order_notes_field_with_block();
     }
 
     /**
@@ -170,6 +175,202 @@ class Woo_Checkout_For_Digital_Goods_Public {
     }
 
     /**
+     * Function for remove checkout fields with new Checkout Blocks.
+     */
+    public function wcdg_override_checkout_fields_with_blocks( $locale ) {
+        $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $woo_checkout_field_array = ( isset( $woo_checkout_unserlize_array['wcdg_chk_field'] ) ? $woo_checkout_unserlize_array['wcdg_chk_field'] : array() );
+        $temp_product_flag = 1;
+        $countries = array_merge( array_keys( WC()->countries->get_shipping_countries() ), array_keys( WC()->countries->get_allowed_countries() ) );
+        $countries = array_unique( $countries );
+        //Hide checkout select billing fields
+        $exclude_all = false;
+        if ( !empty( $woo_checkout_field_array ) ) {
+            foreach ( $woo_checkout_field_array as $woo_checkout_field ) {
+                if ( !is_array( $woo_checkout_field ) ) {
+                    $exclude_all = true;
+                    break;
+                } else {
+                    if ( array_search( "on", $woo_checkout_field, true ) ) {
+                        $exclude_all = true;
+                        break;
+                    }
+                }
+            }
+        }
+        // Return fields if cart is null
+        $get_cart = WC()->cart;
+        if ( is_null( $get_cart ) ) {
+            return $locale;
+        }
+        // basic checks
+        foreach ( WC()->cart->get_cart() as $values ) {
+            $_product = $values['data'];
+            if ( !$_product->is_virtual() && !$_product->is_downloadable() ) {
+                $temp_product_flag = 0;
+                break;
+            }
+        }
+        if ( 0 === $temp_product_flag ) {
+            return $locale;
+        } else {
+            if ( $exclude_all ) {
+                foreach ( $woo_checkout_field_array as $key => $values ) {
+                    $key = str_replace( 'billing_', '', $key );
+                    if ( 'on' === $values['enable'] ) {
+                        foreach ( $countries as $country ) {
+                            if ( !isset( $locale[$country] ) ) {
+                                $locale[$country] = array();
+                            }
+                            if ( $key !== 'country' ) {
+                                $locale[$country][$key] = array(
+                                    'required' => false,
+                                    'hidden'   => true,
+                                );
+                            }
+                        }
+                    }
+                }
+            } else {
+                foreach ( $countries as $country ) {
+                    if ( !isset( $locale[$country] ) ) {
+                        $locale[$country] = array();
+                    }
+                    $locale[$country]['first_name'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['last_name'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['address_1'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['address_2'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['postcode'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['city'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['state'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                    $locale[$country]['phone'] = array(
+                        'required' => false,
+                        'hidden'   => true,
+                    );
+                }
+                return $locale;
+            }
+        }
+        return $locale;
+    }
+
+    /**
+     * Function for update block address format
+     */
+    public function wcdg_change_checkout_block_address_format( $formats ) {
+        if ( is_array( $formats ) ) {
+            foreach ( $formats as $key => $format ) {
+                $formats[$key] = "{first_name} {last_name}\n{country}";
+            }
+        }
+        return $formats;
+    }
+
+    /**
+     * Function for update block fields labels
+     */
+    public function wcdg_update_default_fields_data_with_block() {
+        if ( !class_exists( 'Automattic\\WooCommerce\\Blocks\\Package' ) || !class_exists( 'Automattic\\WooCommerce\\Blocks\\Assets\\AssetDataRegistry' ) || !class_exists( 'Automattic\\WooCommerce\\Blocks\\Domain\\Services\\CheckoutFields' ) ) {
+            return;
+        }
+        // basic checks
+        $temp_product_flag = 1;
+        if ( isset( WC()->session ) && WC()->session->has_session() ) {
+            $cart_contents = WC()->session->get( 'cart', array() );
+            foreach ( $cart_contents as $values ) {
+                if ( isset( $values['product_id'] ) ) {
+                    $_product = wc_get_product( $values['product_id'] );
+                    if ( $_product && !$_product->is_virtual() && !$_product->is_downloadable() ) {
+                        $temp_product_flag = 0;
+                        break;
+                    }
+                }
+            }
+        }
+        // If cart contains non-virtual/downloadable products, return default fields
+        if ( $temp_product_flag === 0 ) {
+            return;
+        }
+        // Modify checkout fields
+        $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $woo_checkout_field_array = ( isset( $woo_checkout_unserlize_array['wcdg_chk_field'] ) ? $woo_checkout_unserlize_array['wcdg_chk_field'] : array() );
+        $checkout_fields = Package::container()->get( CheckoutFields::class );
+        $asset_data_registry = Package::container()->get( AssetDataRegistry::class );
+        $default_address_fields = $checkout_fields->get_core_fields();
+        if ( !empty( $default_address_fields ) && is_array( $default_address_fields ) ) {
+            foreach ( $default_address_fields as $key => &$field ) {
+                if ( $key === 'email' ) {
+                    continue;
+                }
+                // Convert key to match format in `$woo_checkout_field_array`
+                $billing_key = 'billing_' . $key;
+                if ( isset( $woo_checkout_field_array[$billing_key]['label'] ) ) {
+                    $field['label'] = $woo_checkout_field_array[$billing_key]['label'];
+                    $field['optionalLabel'] = $woo_checkout_field_array[$billing_key]['label'];
+                }
+                if ( $key !== 'country' && isset( $woo_checkout_field_array[$billing_key]['enable'] ) && 'on' === $woo_checkout_field_array[$billing_key]['enable'] ) {
+                    $field['required'] = false;
+                    $field['hidden'] = true;
+                }
+            }
+            unset($field);
+        }
+        $asset_data_registry->add( 'defaultFields', array_merge( $default_address_fields, $checkout_fields->get_additional_fields() ) );
+    }
+
+    /**
+     * Function for hide order notes field
+     */
+    public function wcdg_hide_order_notes_field_with_block() {
+        $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $woo_checkout_order_note = ( isset( $woo_checkout_unserlize_array['wcdg_chk_order_note'] ) ? $woo_checkout_unserlize_array['wcdg_chk_order_note'] : '' );
+        $temp_product_flag = 1;
+        // Return if cart is null
+        if ( is_null( WC()->cart ) ) {
+            return;
+        }
+        // basic checks
+        foreach ( WC()->cart->get_cart() as $values ) {
+            $_product = $values['data'];
+            if ( !$_product->is_virtual() && !$_product->is_downloadable() ) {
+                $temp_product_flag = 0;
+                break;
+            }
+        }
+        if ( 0 === $temp_product_flag ) {
+            return;
+        } else {
+            //Hide checkout order note field
+            if ( !empty( $woo_checkout_order_note ) ) {
+                // Hide button from single page
+                $hide_order_notes = '.wc-block-checkout__main .wc-block-checkout__order-notes{display:none!important;}';
+                wp_add_inline_style( $this->plugin_name, $hide_order_notes );
+            }
+        }
+    }
+
+    /**
      * Function for insert quick checkout button after add to cart button.
      */
     public function wcdg_add_quick_checkout_after_add_to_cart_product_page() {
@@ -179,6 +380,8 @@ class Woo_Checkout_For_Digital_Goods_Public {
         $is_downloadable = [];
         $get_variations_id = [];
         $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $wcdg_chk_btn_label = ( isset( $woo_checkout_unserlize_array['wcdg_chk_btn_label'] ) ? $woo_checkout_unserlize_array['wcdg_chk_btn_label'] : '' );
+        $quick_checkout_text = ( !empty( $wcdg_chk_btn_label ) ? $wcdg_chk_btn_label : apply_filters( 'quick_checkout_text', esc_html__( "Quick Checkout", 'woo-checkout-for-digital-goods' ) ) );
         global $product;
         if ( 'wcdg_down_virtual' === $woo_checkout_unserlize_array['wcdg_chk_on'] ) {
             if ( $product->is_type( 'variable' ) || $product->is_type( 'variable-subscription' ) ) {
@@ -268,8 +471,7 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 </script>
                 <?php 
                 }
-                $quick_checkout_text = apply_filters( 'quick_checkout_text', esc_html__( "Quick Checkout", 'woo-checkout-for-digital-goods' ) );
-                echo '<a href="' . esc_url( $addtocart_url ) . '" class="' . esc_attr( $button_class ) . '">' . esc_html__( $quick_checkout_text, 'woo-checkout-for-digital-goods' ) . '</a>';
+                echo '<a href="' . esc_url( $addtocart_url ) . '" class="' . esc_attr( $button_class ) . '">' . esc_html( $quick_checkout_text ) . '</a>';
             }
         }
     }
@@ -279,6 +481,8 @@ class Woo_Checkout_For_Digital_Goods_Public {
      */
     public function wcdg_add_quick_checkout_after_add_to_cart_shop_page() {
         $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $wcdg_chk_btn_label = ( isset( $woo_checkout_unserlize_array['wcdg_chk_btn_label'] ) ? $woo_checkout_unserlize_array['wcdg_chk_btn_label'] : '' );
+        $quick_checkout_text = ( !empty( $wcdg_chk_btn_label ) ? $wcdg_chk_btn_label : apply_filters( 'quick_checkout_text', esc_html__( "Quick Checkout", 'woo-checkout-for-digital-goods' ) ) );
         global $product;
         if ( 'wcdg_down_virtual' === $woo_checkout_unserlize_array['wcdg_chk_on'] ) {
             if ( $product->is_virtual( 'yes' ) || $product->is_downloadable( 'yes' ) ) {
@@ -290,12 +494,44 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 $checkout_url = wc_get_checkout_url();
                 // run on simple & subscription products
                 if ( $product->is_type( 'simple' ) || $product->is_type( 'subscription' ) ) {
-                    $quick_checkout_text = apply_filters( 'quick_checkout_text', esc_html__( "Quick Checkout", 'woo-checkout-for-digital-goods' ) );
                     $url = $checkout_url . '?add-to-cart=' . $current_product_id;
                     echo '<a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt">' . esc_html( $quick_checkout_text ) . '</a>';
                 }
             }
         }
+    }
+
+    /**
+     * Change default Add to Cart button label
+     */
+    public function wcdg_change_add_to_cart_btn_text( $text, $product ) {
+        // Get settings
+        $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $wcdg_enable_cart_btn_label = ( isset( $woo_checkout_unserlize_array['wcdg_enable_cart_btn_label'] ) ? $woo_checkout_unserlize_array['wcdg_enable_cart_btn_label'] : '' );
+        // Custom button label from settings
+        $wcdg_cart_btn_label = ( isset( $woo_checkout_unserlize_array['wcdg_cart_btn_label'] ) && !empty( $woo_checkout_unserlize_array['wcdg_cart_btn_label'] ) ? $woo_checkout_unserlize_array['wcdg_cart_btn_label'] : __( 'Add to cart', 'woo-checkout-for-digital-goods' ) );
+        $final_button = $wcdg_cart_btn_label;
+        // Ensure the feature is enabled in settings
+        if ( empty( $wcdg_enable_cart_btn_label ) || 'on' !== $wcdg_enable_cart_btn_label ) {
+            $final_button = $text;
+        }
+        // On the shop page, keep WooCommerce's default text for grouped products
+        if ( !is_singular( 'product' ) && $product->is_type( 'grouped' ) ) {
+            $final_button = $text;
+        }
+        // Preserve default WooCommerce behavior for out-of-stock or non-purchasable products
+        if ( !$product->is_purchasable() || !$product->is_in_stock() ) {
+            $final_button = $text;
+        }
+        // Keep default "Select options" text for variable products on shop pages
+        if ( !is_singular( 'product' ) && $product->is_type( 'variable' ) ) {
+            $final_button = $text;
+        }
+        // Apply custom button text for grouped products ONLY on the single product page
+        if ( is_singular( 'product' ) && $product->is_type( 'grouped' ) ) {
+            $final_button = $wcdg_cart_btn_label;
+        }
+        return $final_button;
     }
 
     /**

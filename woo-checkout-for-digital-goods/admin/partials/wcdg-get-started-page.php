@@ -18,13 +18,13 @@ require_once(plugin_dir_path( __FILE__ ).'header/plugin-header.php');
                     <?php 
                     echo sprintf(
                         esc_html__('To help you get started, watch the quick tour video on the right. For more help, explore our help documents or visit our %s for detailed video tutorials.', 'woo-checkout-for-digital-goods'),
-                        '<a href="' . esc_url('https://www.youtube.com/@Dotstore16') . '" target="_blank">' . esc_html__('YouTube channel', 'woo-checkout-for-digital-goods') . '</a>',
+                        '<a href="' . esc_url('https://www.youtube.com/@Dotstore16?sub_confirmation=1') . '" target="_blank">' . esc_html__('YouTube channel', 'woo-checkout-for-digital-goods') . '</a>',
                     );
                     ?>
                 </p>
                 <div class="getting-started-actions">
                     <a href="<?php echo esc_url(add_query_arg(array('page' => 'wcdg-general-setting'), admin_url('admin.php'))); ?>" class="quick-start"><?php esc_html_e( 'Set Digital Goods Checkout', 'woo-checkout-for-digital-goods' ); ?><span class="dashicons dashicons-arrow-right-alt"></span></a>
-                    <a href="https://docs.thedotstore.com/article/965-beginners-guide-for-digital-goods" target="_blank" class="setup-guide"><span class="dashicons dashicons-book-alt"></span><?php esc_html_e( 'Read the Setup Guide', 'woo-checkout-for-digital-goods' ); ?></a>
+                    <a href="https://docs.thedotstore.com/article/202-getting-started" target="_blank" class="setup-guide"><span class="dashicons dashicons-book-alt"></span><?php esc_html_e( 'Read the Setup Guide', 'woo-checkout-for-digital-goods' ); ?></a>
                 </div>
             </div>
             <div class="getting-started-video">
