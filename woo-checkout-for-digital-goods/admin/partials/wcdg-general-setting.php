@@ -86,7 +86,7 @@ $wcdg_chk_on = ( isset( $wcdg_general_setting['wcdg_chk_on'] ) && !empty( $wcdg_
 $wcdg_user_role_field = ( isset( $wcdg_general_setting['wcdg_user_role_field'] ) && !empty( $wcdg_general_setting['wcdg_user_role_field'] ) ? $wcdg_general_setting['wcdg_user_role_field'] : '' );
 $wcdg_allow_additional_field_update_flag = ( isset( $wcdg_general_setting['wcdg_allow_additional_field_update_flag'] ) && !empty( $wcdg_general_setting['wcdg_allow_additional_field_update_flag'] ) ? 'checked' : '' );
 // Checkout block notice
-if ( class_exists( 'Automattic\\WooCommerce\\Blocks\\Utils\\CartCheckoutUtils' ) && CartCheckoutUtils::is_checkout_block_default() ) {
+if ( class_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class ) && method_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class, 'is_checkout_block_default' ) && CartCheckoutUtils::is_checkout_block_default() ) {
     $hide_checkout_notice = filter_input( INPUT_GET, 'wcdg-hide-checkout-notice', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
     $checkout_notice_nonce = filter_input( INPUT_GET, '_wcdg_checkout_notice_nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
     if ( isset( $hide_checkout_notice ) && sanitize_text_field( $hide_checkout_notice ) === 'wcdg-hide-checkout-note' && wp_verify_nonce( sanitize_text_field( $checkout_notice_nonce ), 'wcdg_checkout_notices_nonce' ) ) {
@@ -170,7 +170,7 @@ foreach ( $wcdg_default_fields as $wcdg_field_k => $wcdg_field_v ) {
     }
     // Add disable class for country field with checkout block
     $disable_country = '';
-    if ( class_exists( 'Automattic\\WooCommerce\\Blocks\\Utils\\CartCheckoutUtils' ) && CartCheckoutUtils::is_checkout_block_default() ) {
+    if ( class_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class ) && method_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class, 'is_checkout_block_default' ) && CartCheckoutUtils::is_checkout_block_default() ) {
         $disable_country = ( 'billing_country' === $wcdg_field_k ? 'disable-country-row' : '' );
     }
     ?>

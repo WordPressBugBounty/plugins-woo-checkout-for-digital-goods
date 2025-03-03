@@ -15,6 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
+use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 class Woo_Checkout_For_Digital_Goods_Public {
     /**
      * The ID of this plugin.
@@ -148,7 +149,7 @@ class Woo_Checkout_For_Digital_Goods_Public {
                     if ( !is_array( $woo_checkout_field ) ) {
                         unset($fields['billing'][$values]);
                     } else {
-                        if ( "on" === $values['enable'] ) {
+                        if ( isset( $values['enable'] ) && "on" === $values['enable'] ) {
                             unset($fields['billing'][$key]);
                         } else {
                             foreach ( $values as $override_k => $override_v ) {
@@ -178,6 +179,10 @@ class Woo_Checkout_For_Digital_Goods_Public {
      * Function for remove checkout fields with new Checkout Blocks.
      */
     public function wcdg_override_checkout_fields_with_blocks( $locale ) {
+        // Check if the Checkout Block is being used
+        if ( class_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class ) && method_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class, 'is_checkout_block_default' ) && !CartCheckoutUtils::is_checkout_block_default() ) {
+            return $locale;
+        }
         $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
         $woo_checkout_field_array = ( isset( $woo_checkout_unserlize_array['wcdg_chk_field'] ) ? $woo_checkout_unserlize_array['wcdg_chk_field'] : array() );
         $temp_product_flag = 1;
@@ -217,7 +222,7 @@ class Woo_Checkout_For_Digital_Goods_Public {
             if ( $exclude_all ) {
                 foreach ( $woo_checkout_field_array as $key => $values ) {
                     $key = str_replace( 'billing_', '', $key );
-                    if ( 'on' === $values['enable'] ) {
+                    if ( !is_array( $values ) ) {
                         foreach ( $countries as $country ) {
                             if ( !isset( $locale[$country] ) ) {
                                 $locale[$country] = array();
@@ -227,6 +232,20 @@ class Woo_Checkout_For_Digital_Goods_Public {
                                     'required' => false,
                                     'hidden'   => true,
                                 );
+                            }
+                        }
+                    } else {
+                        if ( isset( $values['enable'] ) && 'on' === $values['enable'] ) {
+                            foreach ( $countries as $country ) {
+                                if ( !isset( $locale[$country] ) ) {
+                                    $locale[$country] = array();
+                                }
+                                if ( $key !== 'country' ) {
+                                    $locale[$country][$key] = array(
+                                        'required' => false,
+                                        'hidden'   => true,
+                                    );
+                                }
                             }
                         }
                     }
@@ -279,6 +298,10 @@ class Woo_Checkout_For_Digital_Goods_Public {
      * Function for update block address format
      */
     public function wcdg_change_checkout_block_address_format( $formats ) {
+        // Check if the Checkout Block is being used
+        if ( class_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class ) && method_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class, 'is_checkout_block_default' ) && !CartCheckoutUtils::is_checkout_block_default() ) {
+            return $formats;
+        }
         if ( is_array( $formats ) ) {
             foreach ( $formats as $key => $format ) {
                 $formats[$key] = "{first_name} {last_name}\n{country}";

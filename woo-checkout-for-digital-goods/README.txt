@@ -4,7 +4,7 @@ Plugin URI: https://wordpress.org/plugins/woo-checkout-for-digital-goods/
 Author: Thedotstore
 Author URI: https://www.thedotstore.com/
 Contributors: dots, niravcse006
-Stable tag: 3.8.1
+Stable tag: 3.8.2
 Tags: Woocommerce Checkout, Digital Goods, remove billing fields, checkout fields, Checkout for Digital Goods
 Requires at least: 5.0
 Tested up to: 6.7.2
@@ -248,6 +248,9 @@ Ans: It is compatible with WooCommerce versions 2.6 and higher.
 Automatic updates should work great for you.  As always, though, we recommend backing up your site prior to making any updates just to be sure nothing goes wrong.
 
 == Changelog ==
+= 3.8.2 =
+* [Bug Fix] Quick fix related to the PHP Fatal error: Cannot access offset of type string on string
+
 = 3.8.1 =
 * [New] – Added a new option to change the "Add to Cart" button label
 * [New] – Added a new option to change the "Quick Checkout" button label
