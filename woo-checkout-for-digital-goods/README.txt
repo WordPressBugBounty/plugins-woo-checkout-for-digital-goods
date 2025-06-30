@@ -1,11 +1,11 @@
-=== Digital Goods for WooCommerce Checkout ===
-Plugin Name: Digital Goods for WooCommerce Checkout
+=== Digital Goods (Checkout Field Editor) for WooCommerce Checkout ===
+Plugin Name: Digital Goods (Checkout Field Editor) for WooCommerce Checkout
 Plugin URI: https://wordpress.org/plugins/woo-checkout-for-digital-goods/
 Author: Thedotstore
 Author URI: https://www.thedotstore.com/
 Contributors: dots, niravcse006
 Stable tag: 3.8.2
-Tags: Woocommerce Checkout, Digital Goods, remove billing fields, checkout fields, Checkout for Digital Goods
+Tags: checkout field editor, Checkout for Digital Goods, custom fields, Remove Checkout Fields, WooCommerce checkout
 Requires at least: 5.0
 Tested up to: 6.7.2
 WC tested up to: 9.7.0
