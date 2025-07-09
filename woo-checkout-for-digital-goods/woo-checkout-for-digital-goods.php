@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Plugin Name: Digital Goods for WooCommerce Checkout
+ * Plugin Name: Digital Goods (Checkout Field Editor) for WooCommerce Checkout
  * Plugin URI:        https://www.thedotstore.com/woocommerce-checkout-for-digital-goods/
  * Description:       This plugin will remove billing address fields for downloadable and virtual products.
- * Version:           3.8.2
+ * Version:           3.8.3
  * Author:            theDotstore
  * Author URI:        https://www.thedotstore.com/
  * License:           GPL-2.0+
@@ -14,8 +14,8 @@
  * Requires Plugins:  woocommerce
  * 
  * WC requires at least:4.5
- * WP tested up to:     6.7.2
- * WC tested up to:     9.7.0
+ * WP tested up to:     6.8.1
+ * WC tested up to:     9.9.5
  * Requires PHP:        7.2
  * Requires at least:   5.0
  */
@@ -78,7 +78,7 @@ if ( !defined( 'WCDG_PLUGIN_BASENAME' ) ) {
     define( 'WCDG_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 }
 if ( !defined( 'WCDG_PLUGIN_VERSION' ) ) {
-    define( 'WCDG_PLUGIN_VERSION', '3.8.2' );
+    define( 'WCDG_PLUGIN_VERSION', '3.8.3' );
 }
 if ( !defined( 'WCDG_SLUG' ) ) {
     define( 'WCDG_SLUG', 'woo-checkout-for-digital-goods' );
@@ -334,3 +334,81 @@ add_action( 'before_woocommerce_init', function () {
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
     }
 } );
+if ( !function_exists( 'wcdg_get_default_settings' ) ) {
+    function wcdg_get_default_settings() {
+        return array(
+            'wcdg_status'                             => 'on',
+            'wcdg_chk_field'                          => array(
+                'billing_first_name' => array(
+                    'enable'      => '',
+                    'label'       => 'First name',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_last_name'  => array(
+                    'enable'      => '',
+                    'label'       => 'Last name',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_country'    => array(
+                    'enable'      => '',
+                    'label'       => 'Country / Region',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_address_1'  => array(
+                    'enable'      => '',
+                    'label'       => 'Street address',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_address_2'  => array(
+                    'enable'      => '',
+                    'label'       => 'Apartment, suite, unit, etc.',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_city'       => array(
+                    'enable'      => '',
+                    'label'       => 'Town / City',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_state'      => array(
+                    'enable'      => '',
+                    'label'       => 'State',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_postcode'   => array(
+                    'enable'      => '',
+                    'label'       => 'ZIP Code',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_phone'      => array(
+                    'enable'      => '',
+                    'label'       => 'Phone',
+                    'class'       => '',
+                    'placeholder' => '',
+                ),
+                'billing_company'    => array(
+                    'enable'      => '',
+                    'label'       => 'Company name',
+                    'placeholder' => '',
+                ),
+            ),
+            'wcdg_chk_order_note'                     => '',
+            'wcdg_chk_prod'                           => '',
+            'wcdg_chk_details'                        => '',
+            'wcdg_chk_on'                             => 'wcdg_down_virtual',
+            'wcdg_user_role_field'                    => array(),
+            'wcdg_allow_additional_field_update_flag' => '',
+            'wcdg_chk_btn_label'                      => '',
+            'wcdg_cart_btn_label'                     => '',
+            'wcdg_enable_cart_btn_label'              => '',
+        );
+    }
+
+}

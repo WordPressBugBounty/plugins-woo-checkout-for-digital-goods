@@ -20,10 +20,10 @@ header.dots-header{width:100%;display:inline-block;background:#fff;vertical-alig
 #dotsstoremain .button-dots{display:inline-flex;vertical-align:middle;margin-left:0px;margin-right:0px;float:right;}
 .dots-header-right .logo-detail strong{display:block;font-size:23px;margin-bottom:10px;color:#000;line-height:32px;}
 .dots-bottom-menu-main{padding:0 10px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-ms-flex-wrap:wrap;flex-wrap:wrap;}
-.dots-getting-started{width:48px}
+.dots-getting-started{width:110px}
 .dots-getting-started a{display:inline-block;padding:8.5px 12px;font-size:14px;line-height:11px;border-bottom:2px solid transparent;transition: all .2s ease-in;}
 .dots-getting-started a:hover,.dots-getting-started a.active{border-bottom-color:var(--dots-primary);}
-.dots-menu-main{background-color:transparent;width:calc(100% - 48px);}
+.dots-menu-main{background-color:transparent;width:calc(100% - 110px);}
 .dots-menu-main ul li{display:inline-block;position:relative;float:left;margin:0;}
 .dots-menu-main ul li a{text-decoration:none;-webkit-transition:all 200ms ease-in;transition:all 200ms ease-in;font-size:14px;padding:12px 20px;display:block;line-height:20px;color:#000;font-weight:400;padding:11px 0;border-bottom:2px solid transparent;margin:0 14px;outline: none;box-shadow: none;}
 .dots-menu-main ul li:hover > a,.dots-menu-main ul li a.active{color:#000;background:transparent;border-bottom-color:var(--dots-primary);}
@@ -54,6 +54,57 @@ header.dots-header{width:100%;display:inline-block;background:#fff;vertical-alig
 .dots-submenu-items ul li:last-child::before{display:none;}
 .dots-submenu-items ul li a{font-size:14px;line-height:19px;font-weight:400;color:#000;text-decoration:none;outline: none;box-shadow: none;}
 .dots-submenu-items ul li a.active{color:var(--dots-primary);font-weight:600;}
+
+.dots-getting-started ul li a {
+    text-decoration: none;
+    -webkit-transition: all 200ms ease-in;
+    transition: all 200ms ease-in;
+    font-size: 14px;
+    padding: 11px 0;
+    display: block;
+    line-height: 19px;
+    color: #000;
+    border-bottom: 2px solid transparent;
+    margin: 0;
+}
+.dots-getting-started ul li a.active {
+    color: #fff;
+    background: #444;
+}
+
+.dots-getting-started ul li:hover > a,.dots-getting-started ul li a.active {
+    color: #000;
+    background: transparent;
+    border-bottom-color: #27AE60;
+}
+
+.dots-getting-started ul {
+    display: inline-block;
+    float: left;
+    margin: 0;
+    width: 100%;
+}
+
+.dots-getting-started ul li ul.sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 207px;
+    z-index: 999;
+}
+
+.dots-getting-started ul li ul.sub-menu li {
+    display: block;
+    vertical-align: middle;
+    text-align: left;
+    background: #b8b8b8;
+    width: 100%;
+}
+
+.dots-getting-started ul li:hover ul.sub-menu {
+    display: block;
+}
 
 /* Responsive CSS Start */
 @media only screen and (max-width:991px){

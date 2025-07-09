@@ -193,11 +193,118 @@
         // Script for hide & show quick checkout btn row
         toggleQuickChkBtnLabelRow();
         $('input[name="wcdg_chk_details"], input[name="wcdg_chk_prod"]').change(function () {
+            if(!$('input[name="wcdg_chk_details"]').is(':checked')){
+                //$('.wcdg-product-selection-main').hide();
+            }
+            if( ( $('input[name="wcdg_chk_details"]').is(':checked') || $('input[name="wcdg_chk_prod"]').is(':checked') ) && $('input[name="wcdg_chk_on"][value="wcdg_chk_list"]').is(':checked') ){
+                $('.wcdg-product-selection-main').show();
+            } else {
+                $('.wcdg-product-selection-main').hide();
+            }
             toggleQuickChkBtnLabelRow();
         });
 
         // Script for hide & show add to cart btn row
         hideShowFieldsOnToggle( 'input[name="wcdg_enable_cart_btn_label"]', '.wcdg_cart_btn_label_row' );
+
+        // Ensure jQuery UI Sortable is loaded
+        if (typeof $.fn.sortable === 'function' && $('#thwcfd_checkout_fields .ui-sortable').length) {
+            // Add a hidden input to store the order if not present
+            if ($('#wcdg_billing_fields_order').length === 0) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'wcdg_billing_fields_order',
+                    name: 'wcdg_billing_fields_order',
+                    value: ''
+                }).appendTo('form');
+            }
+            var fixHelperModified = function (e, tr) {
+                var $originals = tr.children();
+                var $helper = tr.clone();
+                $helper.children().each(function (index) {
+                    $(this).width($originals.eq(index).width());
+                });
+                return $helper;
+            };
+            // On page load, if order is empty, set it to current order
+            var $orderInput = $('#wcdg_billing_fields_order');
+            if ($orderInput.val() === '') {
+                var initialOrder = [];
+                $('#thwcfd_checkout_fields .ui-sortable > tr').each(function() {
+                    initialOrder.push($(this).find('.td_name').text().trim());
+                });
+                $orderInput.val(initialOrder.join(','));
+            }
+            setTimeout(function(){
+                $('#thwcfd_checkout_fields .ui-sortable').sortable({
+                    items: '> tr',
+                    cursor: 'move',
+                    axis: 'y',
+                    handle: '.wcdg-drag-handle',
+                    helper: fixHelperModified,
+                    update: function() {
+                        var order = [];
+                        $('#thwcfd_checkout_fields .ui-sortable > tr').each(function() {
+                            order.push($(this).find('.td_name').text().trim());
+                        });
+                        $('#wcdg_billing_fields_order').val(order.join(','));
+                    }
+                });
+            },2000);
+            // Add cursor style for drag handle
+            $('<style>.wcdg-drag-handle { cursor: move; }</style>').appendTo('head');
+        }
+        // Check initial state on page load
+        if ($('input[name="wcdg_chk_on"][value="wcdg_chk_list"]').is(':checked') && jQuery('input[name="wcdg_chk_details"]').is(':checked')) {
+            $('.wcdg-product-selection-main').show();
+        } else {
+            $('.wcdg-product-selection-main').hide();
+        }
+
+        if( $('input[name="wcdg_chk_prod"]').is(':checked') && $('input[name="wcdg_chk_on"][value="wcdg_chk_list"]').is(':checked') ) {
+            $('.wcdg-product-selection-main').show();
+        }
+        
+        // Handle radio button change
+        $('input[name="wcdg_chk_on"]').change(function() {
+            if ($(this).val() === 'wcdg_chk_list') {
+                $('.wcdg-product-selection-main').show();
+            } else {
+                $('.wcdg-product-selection-main').hide();
+            }
+            // Submit the closest form
+            jQuery('input[name="submit_master_settings"]').trigger('click');
+        });
+
+        $('#thwcfd_checkout_fields').on('change', 'input[type=checkbox][name^="wcdg_chk_field"][name$="[enable]"]', function() {
+            var $checkbox = $(this);
+            var $row = $checkbox.closest('tr');
+            var checked = $checkbox.is(':checked');
+            var $editSpan = $row.find('.wcdg-edit-field');
+            var $hidden = $row.find('input.wcdg-custom-field-json');
+            if ($editSpan.length) {
+                // Get and parse the data-field JSON
+                var fieldData = $editSpan.attr('data-field');
+                var fieldObj;
+                try {
+                    fieldObj = JSON.parse( fieldData );
+                } catch (e) {
+                    try {
+                        fieldObj = JSON.parse(decodeURIComponent(fieldData));
+                    } catch (e2) {
+                        fieldObj = {};
+                    }
+                }
+                // Update the enable property
+                fieldObj.enable = checked ? 'on' : '';
+                // Update the data-field attribute and hidden input
+                var newJson = JSON.stringify(fieldObj);
+                $editSpan.attr('data-field', newJson);
+                if ($hidden.length) {
+                    $hidden.val(newJson);
+                }
+            }
+        });
     });
 
     // Script for hide & show quick checkout btn row
@@ -269,7 +376,7 @@
         });
         handler.open({
             name: 'Digital Goods for WooCommerce Checkout',
-            subtitle: 'You’re a step closer to our Pro features',
+            subtitle: 'You\'re a step closer to our Pro features',
             licenses: jQuery('input[name="licence"]:checked').val(),
             purchaseCompleted: function( response ) {
                 console.log (response);

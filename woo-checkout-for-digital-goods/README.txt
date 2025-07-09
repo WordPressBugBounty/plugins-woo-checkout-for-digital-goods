@@ -4,11 +4,11 @@ Plugin URI: https://wordpress.org/plugins/woo-checkout-for-digital-goods/
 Author: Thedotstore
 Author URI: https://www.thedotstore.com/
 Contributors: dots, niravcse006
-Stable tag: 3.8.2
+Stable tag: 3.8.3
 Tags: checkout field editor, Checkout for Digital Goods, custom fields, Remove Checkout Fields, WooCommerce checkout
 Requires at least: 5.0
-Tested up to: 6.7.2
-WC tested up to: 9.7.0
+Tested up to: 6.8.1
+WC tested up to: 9.9.5
 Copyright: (c) 2015-2022 Thedotstore all rights reserved (support@thedotstore.com)
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -248,6 +248,14 @@ Ans: It is compatible with WooCommerce versions 2.6 and higher.
 Automatic updates should work great for you.  As always, though, we recommend backing up your site prior to making any updates just to be sure nothing goes wrong.
 
 == Changelog ==
+= 3.8.3 =
+* [New] – Reset checkout fields settings
+* [Bug Fix] – Billing info not showing in order details (for physical products)
+* [Bug Fix] – WooCommerce strings were altered when plugin active – fixed
+* [Enhancement] – Optimized plugin user interface for better customer experience
+* [Enhancement] – Compatible with WooCommerce 9.9.x
+* [Enhancement] – Compatible with WordPress 6.8.x
+
 = 3.8.2 =
 * [Bug Fix] Quick fix related to the PHP Fatal error: Cannot access offset of type string on string
 

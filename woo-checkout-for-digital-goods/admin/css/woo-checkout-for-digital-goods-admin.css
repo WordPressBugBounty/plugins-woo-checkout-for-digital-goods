@@ -13,6 +13,7 @@ body a,body a:hover{color:var(--dots-primary);outline:none!important;-webkit-box
 .dots-settings-inner-main .form-table{margin:0}
 .dots-settings-inner-main table.table-outer tr{background-color: #fff;border-bottom: 1px solid #dadada;}
 .dots-settings-inner-main .form-table th{width:280px;}
+/* .dots-settings-inner-main .wcdg-master-settings{width:280px;} */
 .dots-settings-inner-main table.table-outer tr th, .dots-settings-inner-main table.table-outer tr td{font-size:13px;color:#333;line-height:20px;vertical-align:top;padding:15px 30px;}
 .dots-section-left h2,#fs_account h3{font-size:18px;line-height:24px;font-weight:500;background-color:#DEDEDE;padding:15px 30px;border:none;margin:0;color:#1d2327;border-bottom:1px solid #dadada;border-radius:5px 5px 0 0;}
 .dots-settings-inner-main .dots-box-shadow{-webkit-box-shadow:0 0 10px rgb(0 0 0 / 8%);box-shadow:0 0 10px rgb(0 0 0 / 8%);}
@@ -172,7 +173,7 @@ a#fee-delete-field{font-size:25px;vertical-align:middle;}
 .thpladmin_fields_table .td_enabled{width:80px;}
 .thpladmin_fields_table .td_clear{width:65px;}
 .thpladmin_fields_table .td_required{width:85px;}
-.thpladmin_fields_table .td_select{width:45px;}
+.thpladmin_fields_table .td_select{width:69px;min-height: 55px;display: flex !important;align-items: center;gap: 8px;}
 .thpladmin_fields_table .td_type{width:150px;}
 .thpladmin_fields_table .td_validate{text-transform:capitalize;}
 .thpladmin_fields_table th.status{white-space:nowrap;}
@@ -180,6 +181,10 @@ a#fee-delete-field{font-size:25px;vertical-align:middle;}
 .dashicons-dismiss{color:#e90000;}
 .td_label input,.td_placeholder input{width:100%;outline:none;}
 .td_label input:focus,.td_placeholder input:focus{border-color:var(--dots-primary);box-shadow:none;}
+.td_class input {
+    width: 100%;
+    box-sizing: border-box;
+}
 /* End SJ */
 
 /* Freemius My Account page style */
@@ -257,6 +262,35 @@ a#fee-delete-field{font-size:25px;vertical-align:middle;}
 .dots-settings-inner-main .wcdg-pro-label::before{content:"🔒";display:inline-block;font-size:15px;line-height:normal;}
 .wcdg-upgrade-pro-to-unlock .wcdg-table-outer, .wcdg-upgrade-pro-to-unlock .wcdg-data-container{opacity:0.7;pointer-events:none;}
 
+.wcdg-main-left-section input[name="reset_master_settings"]:hover {
+    color: #e90000 !important;
+    border: 1px solid #e90000 !important;
+}
+.ui-sortable .ui-sortable-placeholder td {
+	border-color: #bbb;
+    background-color: #FCFCFC;
+    height: 64px;
+    background-image: none;
+    -moz-border-radius: 6px 6px 6px 6px;
+    border: 3px dashed #E6E6E6;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.ui-sortable .ui-sortable-helper {
+    display: flex;
+    justify-content: space-between;
+    background: #F6F7F7 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.product_header_title span.woocommerce-help-tip {
+    margin: -9px 0px -2px -3px;
+    font-size: 18px;
+    vertical-align: baseline;
+}
+
 /* Upgrade to pro modal */
 @-webkit-keyframes wcdgPopupEffect{
     0%{top:-8%;}
@@ -326,4 +360,41 @@ body.wcdg-modal-visible{overflow:hidden;}
     .upgrade-to-pro-modal-main .pro-modal-header img{display:none;}
     .upgrade-to-pro-modal-main .modal-close-btn{top:-22px;font-size:20px;line-height:13px;padding:7px 0;width:26px;height:26px;color:#000}
     .upgrade-to-pro-modal-main .modal-close-btn:hover{color:#fff}
+}
+
+.wcdg-drag-handle {
+    cursor: move;
+    display: inline-block;
+    font-size: 18px;
+    vertical-align: middle;
+    color: #1e1e1e;
+    font-weight: bold;
+}
+.td_sort {
+    text-align: center;
+    width: 32px;
+}
+#wcdg-add-field-modal input.regular-text,
+#wcdg-add-field-modal select.regular-text,
+#wcdg-add-field-modal textarea.regular-text {
+    width: 100% !important;
+    box-sizing: border-box;
+    max-width:100% !important;
+}
+#wcdg-add-field-modal .wcdg-select-option-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+#wcdg-add-field-modal .wcdg-select-option-label,
+#wcdg-add-field-modal .wcdg-select-option-value {
+    width: 100%;
+    min-width: 0;
+}
+#wcdg-add-field-modal .button.wcdg-remove-select-option {
+    flex: 0 0 auto;
+}
+.wcdg-main-left-section .wcdg-checkout-billing-fields button#wcdg-add-field-btn {
+    float: right;
+    padding: 7px;
 }

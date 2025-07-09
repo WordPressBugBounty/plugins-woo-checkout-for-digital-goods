@@ -2,9 +2,9 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Digital Goods for WooCommerce Checkout Pro 3.8.2\n"
+"Project-Id-Version: Digital Goods for WooCommerce Checkout Pro 3.8.3\n"
 "Report-Msgid-Bugs-To: https://www.multidots.com/contact/\n"
-"POT-Creation-Date: 2025-03-03 08:29:07+00:00\n"
+"POT-Creation-Date: 2025-07-07 14:39:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,55 +24,65 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:84
-#: admin/partials/wcdg-quick-checkout.php:60
+#: admin/class-woo-checkout-for-digital-goods-admin.php:85
 msgid "Select a tag"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:85
-#: admin/partials/wcdg-quick-checkout.php:48
+#: admin/class-woo-checkout-for-digital-goods-admin.php:86
 msgid "Select a category"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:86
-#: admin/partials/wcdg-general-setting.php:220
-#: admin/partials/wcdg-general-setting.php:238
+#: admin/class-woo-checkout-for-digital-goods-admin.php:87
+#: admin/partials/wcdg-general-setting.php:379
+#: admin/partials/wcdg-general-setting.php:397
 msgid "Select a user role"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:113
+#: admin/class-woo-checkout-for-digital-goods-admin.php:88
+msgid "No Digital products found."
+msgstr ""
+
+#: admin/class-woo-checkout-for-digital-goods-admin.php:89
+msgid "No matching tags found."
+msgstr ""
+
+#: admin/class-woo-checkout-for-digital-goods-admin.php:90
+msgid "No matching categories found."
+msgstr ""
+
+#: admin/class-woo-checkout-for-digital-goods-admin.php:118
 msgid "Dotstore Plugins"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:213
+#: admin/class-woo-checkout-for-digital-goods-admin.php:220
 msgid ""
 "<strong>We need your support</strong> to keep updating and improving the "
 "plugin. Please <a href=\"%1$s\" target=\"_blank\">help us by leaving a good "
 "review</a> :) Thanks!"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:312
-#: admin/partials/wcdg-quick-checkout.php:311
+#: admin/class-woo-checkout-for-digital-goods-admin.php:319
+#: admin/partials/wcdg-quick-checkout.php:594
 msgid "%1$s (#%2$s)"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:355
+#: admin/class-woo-checkout-for-digital-goods-admin.php:362
 msgid "Data has been Exported!"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:380
+#: admin/class-woo-checkout-for-digital-goods-admin.php:387
 msgid "Please upload a file to import"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:387
+#: admin/class-woo-checkout-for-digital-goods-admin.php:394
 msgid "Please upload a valid .json file"
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:397
+#: admin/class-woo-checkout-for-digital-goods-admin.php:404
 msgid "Blank .json file uploaded."
 msgstr ""
 
-#: admin/class-woo-checkout-for-digital-goods-admin.php:400
+#: admin/class-woo-checkout-for-digital-goods-admin.php:407
 msgid "Data has been Imported!"
 msgstr ""
 
@@ -310,7 +320,7 @@ msgid ""
 msgstr ""
 
 #: admin/partials/dots-upgrade-dashboard.php:94
-#: admin/partials/wcdg-general-setting.php:359
+#: admin/partials/wcdg-general-setting.php:481
 msgid "Exclude Order Note"
 msgstr ""
 
@@ -565,7 +575,7 @@ msgid "Help"
 msgstr ""
 
 #: admin/partials/header/plugin-header.php:74
-#: public/class-woo-checkout-for-digital-goods-public.php:849
+#: public/class-woo-checkout-for-digital-goods-public.php:1061
 msgid "My Account"
 msgstr ""
 
@@ -574,14 +584,14 @@ msgid "General Setting"
 msgstr ""
 
 #: admin/partials/header/plugin-header.php:98
-#: public/class-woo-checkout-for-digital-goods-public.php:445
-#: public/class-woo-checkout-for-digital-goods-public.php:703
+#: admin/partials/wcdg-quick-checkout.php:132
+#: admin/partials/wcdg-quick-checkout.php:260
+#: public/class-woo-checkout-for-digital-goods-public.php:636
+#: public/class-woo-checkout-for-digital-goods-public.php:902
 msgid "Quick Checkout"
 msgstr ""
 
 #: admin/partials/header/plugin-header.php:104
-#: admin/partials/wcdg-quick-checkout.php:20
-#: admin/partials/wcdg-quick-checkout.php:78
 #: includes/class-woo-checkout-for-digital-goods.php:241
 msgid "Settings"
 msgstr ""
@@ -594,161 +604,238 @@ msgstr ""
 msgid "Get Premium"
 msgstr ""
 
-#: admin/partials/header/plugin-header.php:139
+#: admin/partials/header/plugin-header.php:129
+msgid "Getting Started"
+msgstr ""
+
+#: admin/partials/header/plugin-header.php:147
 msgid "Import / Export"
 msgstr ""
 
-#: admin/partials/header/plugin-header.php:140
+#: admin/partials/header/plugin-header.php:148
 msgid "Shop Plugins"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:96
+#: admin/partials/wcdg-general-setting.php:158
+msgid "Settings reset successfully"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:174
 msgid ""
 "The billing country field cannot be removed when using the new WooCommerce "
 "checkout blocks. If you want to remove it completely, switch to the classic "
 "shortcode-based checkout."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:106
+#: admin/partials/wcdg-general-setting.php:178
+msgid ""
+"Field sorting and custom fields are not supported in WooCommerce Checkout "
+"Blocks. Use classic checkout (shortcode) for full compatibility."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:192
 msgid "Checkout Billing Fields"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:111
-#: admin/partials/wcdg-general-setting.php:120
+#: admin/partials/wcdg-general-setting.php:199
+msgid "Add New Field"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:210
+#: admin/partials/wcdg-general-setting.php:226
+msgid "Sort"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:213
+#: admin/partials/wcdg-general-setting.php:229
 msgid "Name"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:112
-#: admin/partials/wcdg-general-setting.php:121
+#: admin/partials/wcdg-general-setting.php:214
+#: admin/partials/wcdg-general-setting.php:230
 msgid "Label"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:113
-#: admin/partials/wcdg-general-setting.php:122
+#: admin/partials/wcdg-general-setting.php:215
+#: admin/partials/wcdg-general-setting.php:231
+#: admin/partials/wcdg-general-setting.php:577
+msgid "Class"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:216
+#: admin/partials/wcdg-general-setting.php:232
+#: admin/partials/wcdg-general-setting.php:581
 msgid "Placeholder"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:114
-#: admin/partials/wcdg-general-setting.php:123
+#: admin/partials/wcdg-general-setting.php:217
+#: admin/partials/wcdg-general-setting.php:233
 msgid "Excluded"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:164
+#: admin/partials/wcdg-general-setting.php:295
+msgid "Drag to reorder"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:323
 msgid "Configuration"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:171
+#: admin/partials/wcdg-general-setting.php:330
 msgid "Status"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:172
+#: admin/partials/wcdg-general-setting.php:331
 msgid ""
-"Enable or disable the plugin’s functionality. When enabled, selected "
+"Enable or disable the plugin's functionality. When enabled, selected "
 "checkout billing fields will be removed, and other settings will be set up."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:189
-#: admin/partials/wcdg-general-setting.php:213
-#: admin/partials/wcdg-general-setting.php:231
+#: admin/partials/wcdg-general-setting.php:348
+#: admin/partials/wcdg-general-setting.php:372
+#: admin/partials/wcdg-general-setting.php:390
 msgid "Select User Role"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:190
-#: admin/partials/wcdg-general-setting.php:215
-#: admin/partials/wcdg-general-setting.php:233
+#: admin/partials/wcdg-general-setting.php:349
+#: admin/partials/wcdg-general-setting.php:374
+#: admin/partials/wcdg-general-setting.php:392
 msgid ""
 "Choose the user roles for which the plugin's functionality should be "
 "enabled."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:198
+#: admin/partials/wcdg-general-setting.php:357
 msgid "Guest / Not logged In"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:248
-msgid "Quick Checkout on Shop Page"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:249
-msgid "Display a \"Quick Checkout\" button on the shop page for digital products."
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:261
-msgid "Quick Checkout on Product Page"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:262
-msgid ""
-"Show a \"Quick Checkout\" button on the product details page for digital "
-"products."
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:274
-#: admin/partials/wcdg-general-setting.php:346
+#: admin/partials/wcdg-general-setting.php:409
+#: admin/partials/wcdg-general-setting.php:468
+#: admin/partials/wcdg-quick-checkout.php:115
+#: admin/partials/wcdg-quick-checkout.php:243
 msgid "Button Label"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:275
+#: admin/partials/wcdg-general-setting.php:410
+#: admin/partials/wcdg-quick-checkout.php:118
+#: admin/partials/wcdg-quick-checkout.php:246
 msgid "Customize the label text for the \"Quick Checkout\" button."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:280
-#: admin/partials/wcdg-general-setting.php:352
+#: admin/partials/wcdg-general-setting.php:415
+#: admin/partials/wcdg-general-setting.php:474
 msgid "Enter Button Label"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:289
-#: admin/partials/wcdg-general-setting.php:307
-#: admin/partials/wcdg-general-setting.php:320
+#: admin/partials/wcdg-general-setting.php:424
+#: admin/partials/wcdg-general-setting.php:442
+#: admin/partials/wcdg-general-setting.php:455
 msgid "Quick Checkout On"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:294
-#: admin/partials/wcdg-general-setting.php:310
-#: admin/partials/wcdg-general-setting.php:323
+#: admin/partials/wcdg-general-setting.php:429
+#: admin/partials/wcdg-general-setting.php:445
+#: admin/partials/wcdg-general-setting.php:458
 msgid "Apply quick checkout to all downloadable and/or virtual products"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:298
-#: admin/partials/wcdg-general-setting.php:311
-#: admin/partials/wcdg-general-setting.php:324
+#: admin/partials/wcdg-general-setting.php:433
+#: admin/partials/wcdg-general-setting.php:446
+#: admin/partials/wcdg-general-setting.php:459
 msgid "To manually select products, categories, or tags, "
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:298
+#: admin/partials/wcdg-general-setting.php:433
 msgid "Click Here"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:333
-msgid "Add to Cart Button Label"
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:334
-msgid "Enable this option to modify the default \"Add to Cart\" button label."
-msgstr ""
-
-#: admin/partials/wcdg-general-setting.php:347
+#: admin/partials/wcdg-general-setting.php:469
+#: admin/partials/wcdg-quick-checkout.php:341
 msgid "Set a custom label for the \"Add to Cart\" button."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:360
+#: admin/partials/wcdg-general-setting.php:482
 msgid ""
 "Check this option to remove the optional \"Order Notes\" field from the "
 "checkout page."
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:376
-#: admin/partials/wcdg-general-setting.php:392
-#: admin/partials/wcdg-general-setting.php:410
+#: admin/partials/wcdg-general-setting.php:498
+#: admin/partials/wcdg-general-setting.php:514
+#: admin/partials/wcdg-general-setting.php:532
 msgid "Update on Thank You Page"
 msgstr ""
 
-#: admin/partials/wcdg-general-setting.php:377
-#: admin/partials/wcdg-general-setting.php:394
-#: admin/partials/wcdg-general-setting.php:412
+#: admin/partials/wcdg-general-setting.php:499
+#: admin/partials/wcdg-general-setting.php:516
+#: admin/partials/wcdg-general-setting.php:534
 msgid ""
 "Display a button on the Thank You page to allow users to update their "
 "information."
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:550
+msgid "Reset to Default"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:557
+msgid "Add New Billing Field"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:559
+msgid "Field Label"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:563
+msgid "Field Name"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:567
+msgid "Type"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:569
+msgid "Text"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:570
+msgid "Email"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:571
+msgid "Checkbox"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:572
+msgid "Textarea"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:573
+msgid "Select"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:585
+msgid "Required"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:588
+msgid "Default Value"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:592
+msgid "Display in Emails"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:595
+msgid "Display in Order Detail Pages"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:598
+msgid "Select Options"
+msgstr ""
+
+#: admin/partials/wcdg-general-setting.php:606
+msgid "Cancel"
 msgstr ""
 
 #: admin/partials/wcdg-get-started-page.php:14
@@ -877,67 +964,142 @@ msgstr ""
 msgid "German, Spain, Polish, French"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:29
-#: admin/partials/wcdg-quick-checkout.php:263
+#: admin/partials/wcdg-quick-checkout.php:55
+#: admin/partials/wcdg-quick-checkout.php:184
+msgid "Button Settings"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:56
+#: admin/partials/wcdg-quick-checkout.php:185
+msgid "Quick checkout button settings"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:66
+#: admin/partials/wcdg-quick-checkout.php:195
+msgid "Enable on Shop/Archive Page"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:69
+#: admin/partials/wcdg-quick-checkout.php:198
+msgid "Display a \"Quick Checkout\" button on the shop page for digital products."
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:91
+#: admin/partials/wcdg-quick-checkout.php:219
+msgid "Enable on Product Page"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:94
+#: admin/partials/wcdg-quick-checkout.php:222
+msgid ""
+"Show a \"Quick Checkout\" button on the product details page for digital "
+"products."
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:138
+#: admin/partials/wcdg-quick-checkout.php:270
+#: admin/partials/wcdg-quick-checkout.php:288
+#: admin/partials/wcdg-quick-checkout.php:301
+msgid "Default Enable On"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:141
+#: admin/partials/wcdg-quick-checkout.php:275
+#: admin/partials/wcdg-quick-checkout.php:291
+#: admin/partials/wcdg-quick-checkout.php:304
+msgid "To all downloadable and/or virtual products"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:142
+#: admin/partials/wcdg-quick-checkout.php:279
+#: admin/partials/wcdg-quick-checkout.php:292
+#: admin/partials/wcdg-quick-checkout.php:305
+msgid "To manually select products, categories, or tags "
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:152
+#: admin/partials/wcdg-quick-checkout.php:365
+msgid "Product Selection"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:153
+#: admin/partials/wcdg-quick-checkout.php:366
+msgid ""
+"The selected products, categories, or tags will display the Quick Checkout "
+"button on the product and listing pages. This feature does not affect or "
+"customize the checkout fields. It simply enables the quick checkout option "
+"for the selected items."
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:159
+#: admin/partials/wcdg-quick-checkout.php:546
 msgid "Products"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:30
-#: admin/partials/wcdg-quick-checkout.php:264
+#: admin/partials/wcdg-quick-checkout.php:160
+#: admin/partials/wcdg-quick-checkout.php:547
 msgid "Categories"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:31
-#: admin/partials/wcdg-quick-checkout.php:265
+#: admin/partials/wcdg-quick-checkout.php:161
+#: admin/partials/wcdg-quick-checkout.php:548
 msgid "Tags"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:36
-#: admin/partials/wcdg-quick-checkout.php:37
-#: admin/partials/wcdg-quick-checkout.php:119
-#: admin/partials/wcdg-quick-checkout.php:306
+#: admin/partials/wcdg-quick-checkout.php:165
+#: admin/partials/wcdg-quick-checkout.php:166
+#: admin/partials/wcdg-quick-checkout.php:408
+#: admin/partials/wcdg-quick-checkout.php:589
 msgid "Select a product"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:108
+#: admin/partials/wcdg-quick-checkout.php:314
+msgid "Update Cart Button Label"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:317
+msgid "Enable this option to modify the default \"Add to Cart\" button label."
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:338
+msgid "New Label"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:355
+msgid "Add to Cart"
+msgstr ""
+
+#: admin/partials/wcdg-quick-checkout.php:397
 msgid "Product inserted Successfully!!"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:110
+#: admin/partials/wcdg-quick-checkout.php:399
 msgid "Please select at least one product..!!"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:117
+#: admin/partials/wcdg-quick-checkout.php:406
 msgid "Select Digital Product"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:123
-#: admin/partials/wcdg-quick-checkout.php:190
-#: admin/partials/wcdg-quick-checkout.php:250
+#: admin/partials/wcdg-quick-checkout.php:412
+#: admin/partials/wcdg-quick-checkout.php:476
+#: admin/partials/wcdg-quick-checkout.php:533
 msgid "Back"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:154
+#: admin/partials/wcdg-quick-checkout.php:442
 msgid "Category inserted Successfully!!"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:156
-msgid "Please select at least one category..!!"
-msgstr ""
-
-#: admin/partials/wcdg-quick-checkout.php:163
+#: admin/partials/wcdg-quick-checkout.php:449
 msgid "Select Category"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:220
+#: admin/partials/wcdg-quick-checkout.php:505
 msgid "Tag inserted Successfully!!"
 msgstr ""
 
-#: admin/partials/wcdg-quick-checkout.php:222
-msgid "Please select at least one tag..!!"
-msgstr ""
-
-#: admin/partials/wcdg-quick-checkout.php:229
+#: admin/partials/wcdg-quick-checkout.php:512
 msgid "Select Tag"
 msgstr ""
 
@@ -945,11 +1107,15 @@ msgstr ""
 msgid "Docs"
 msgstr ""
 
-#: public/class-woo-checkout-for-digital-goods-public.php:784
+#: public/class-woo-checkout-for-digital-goods-public.php:77
+msgid "Additional Information"
+msgstr ""
+
+#: public/class-woo-checkout-for-digital-goods-public.php:996
 msgid "Add to cart"
 msgstr ""
 
-#: public/class-woo-checkout-for-digital-goods-public.php:844
+#: public/class-woo-checkout-for-digital-goods-public.php:1056
 msgid ""
 "Please check your email for login details and update your remaining billing "
 "details."

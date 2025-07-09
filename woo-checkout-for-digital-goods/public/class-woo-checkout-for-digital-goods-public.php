@@ -45,6 +45,124 @@ class Woo_Checkout_For_Digital_Goods_Public {
     public function __construct( $plugin_name, $version ) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+        $this->register_custom_field_hooks();
+    }
+
+    public function register_custom_field_hooks() {
+        // Show custom fields in order emails
+        add_filter(
+            'woocommerce_email_order_meta_fields',
+            function ( $fields, $sent_to_admin, $order ) {
+                $settings = get_option( 'wcdg_checkout_setting', array() );
+                if ( !empty( $settings['wcdg_chk_field'] ) ) {
+                    foreach ( $settings['wcdg_chk_field'] as $key => $field ) {
+                        if ( !empty( $field['show_in_email'] ) ) {
+                            $meta_key = $key;
+                            $label = ( isset( $field['label'] ) ? $field['label'] : $key );
+                            $value = get_post_meta( $order->get_id(), $meta_key, true );
+                            if ( $value !== '' ) {
+                                $fields[$meta_key] = array(
+                                    'label' => $label,
+                                    'value' => $value,
+                                );
+                            }
+                        }
+                    }
+                }
+                return $fields;
+            },
+            10,
+            3
+        );
+        // Show custom fields in order details (thank you page and admin)
+        add_action( 'woocommerce_order_details_after_customer_details', function ( $order ) {
+            $settings = get_option( 'wcdg_checkout_setting', array() );
+            if ( !empty( $settings['wcdg_chk_field'] ) ) {
+                echo '<section class="woocommerce-customer-details"><h3>' . esc_html__( 'Additional Information', 'woo-checkout-for-digital-goods' ) . '</h3><table class="shop_table customer_details">';
+                foreach ( $settings['wcdg_chk_field'] as $key => $field ) {
+                    if ( !empty( $field['show_in_order'] ) ) {
+                        $meta_key = $key;
+                        $label = ( isset( $field['label'] ) ? $field['label'] : $key );
+                        $value = get_post_meta( $order->get_id(), $meta_key, true );
+                        if ( $value !== '' ) {
+                            echo '<tr><th>' . esc_html( $label ) . '</th><td>' . esc_html( $value ) . '</td></tr>';
+                        }
+                    }
+                }
+                echo '</table></section>';
+            }
+        } );
+        // Show custom fields in admin order details
+        add_action( 'woocommerce_admin_order_data_after_billing_address', function ( $order ) {
+            $settings = get_option( 'wcdg_checkout_setting', array() );
+            if ( !empty( $settings['wcdg_chk_field'] ) ) {
+                foreach ( $settings['wcdg_chk_field'] as $key => $field ) {
+                    if ( !empty( $field['show_in_order'] ) ) {
+                        $meta_key = $key;
+                        $label = ( isset( $field['label'] ) ? $field['label'] : $key );
+                        $value = get_post_meta( $order->get_id(), $meta_key, true );
+                        if ( $value !== '' ) {
+                            echo '<p><strong>' . esc_html( $label ) . ':</strong> ' . esc_html( $value ) . '</p>';
+                        }
+                    }
+                }
+            }
+        } );
+        // Save custom fields to order meta (legacy, for non-HPOS)
+        add_action( 'woocommerce_checkout_update_order_meta', function ( $order_id ) {
+            $settings = get_option( 'wcdg_checkout_setting', array() );
+            $default_fields = array();
+            if ( function_exists( 'wcdg_get_default_settings' ) ) {
+                $default_settings = wcdg_get_default_settings();
+                if ( isset( $default_settings['wcdg_chk_field'] ) ) {
+                    $default_fields = array_keys( $default_settings['wcdg_chk_field'] );
+                }
+            }
+            if ( !empty( $settings['wcdg_chk_field'] ) ) {
+                foreach ( $settings['wcdg_chk_field'] as $key => $field ) {
+                    if ( in_array( $key, $default_fields, true ) ) {
+                        continue;
+                        // Skip default fields
+                    }
+                    if ( isset( $_POST[$key] ) ) {
+                        // phpcs:ignore
+                        $value = sanitize_text_field( $_POST[$key] );
+                        // phpcs:ignore
+                        update_post_meta( $order_id, $key, $value );
+                    }
+                }
+            }
+        } );
+        // Save custom fields to order meta (HPOS compatible)
+        add_action(
+            'woocommerce_checkout_create_order',
+            function ( $order, $data ) {
+                $settings = get_option( 'wcdg_checkout_setting', array() );
+                $default_fields = array();
+                if ( function_exists( 'wcdg_get_default_settings' ) ) {
+                    $default_settings = wcdg_get_default_settings();
+                    if ( isset( $default_settings['wcdg_chk_field'] ) ) {
+                        $default_fields = array_keys( $default_settings['wcdg_chk_field'] );
+                    }
+                }
+                if ( !empty( $settings['wcdg_chk_field'] ) ) {
+                    foreach ( $settings['wcdg_chk_field'] as $key => $field ) {
+                        if ( in_array( $key, $default_fields, true ) ) {
+                            continue;
+                            // Skip default fields
+                        }
+                        if ( isset( $_POST[$key] ) ) {
+                            // phpcs:ignore
+                            $value = sanitize_text_field( $_POST[$key] );
+                            // phpcs:ignore
+                            $order->update_meta_data( $key, $value );
+                        }
+                    }
+                }
+            },
+            10,
+            2
+        );
     }
 
     /**
@@ -86,6 +204,23 @@ class Woo_Checkout_For_Digital_Goods_Public {
      */
     public function wcdg_prepare_country_locale( $fields ) {
         $override_label = $override_ph = true;
+        $temp_product_flag = 1;
+        // Return fields if cart is null
+        $get_cart = WC()->cart;
+        if ( is_null( $get_cart ) ) {
+            return $fields;
+        }
+        // basic checks
+        foreach ( WC()->cart->get_cart() as $values ) {
+            $_product = $values['data'];
+            if ( !$_product->is_virtual() && !$_product->is_downloadable() ) {
+                $temp_product_flag = 0;
+                break;
+            }
+        }
+        if ( 0 === $temp_product_flag ) {
+            return $fields;
+        }
         if ( is_array( $fields ) ) {
             foreach ( $fields as $key => $props ) {
                 if ( $override_label && isset( $props['label'] ) ) {
@@ -107,11 +242,9 @@ class Woo_Checkout_For_Digital_Goods_Public {
         $woo_checkout_field_array = ( isset( $woo_checkout_unserlize_array['wcdg_chk_field'] ) ? $woo_checkout_unserlize_array['wcdg_chk_field'] : '' );
         $woo_checkout_order_note = ( isset( $woo_checkout_unserlize_array['wcdg_chk_order_note'] ) ? $woo_checkout_unserlize_array['wcdg_chk_order_note'] : '' );
         $temp_product_flag = 1;
-        // Return fields if cart is null
         if ( is_null( WC()->cart ) ) {
             return $fields;
         }
-        // basic checks
         foreach ( WC()->cart->get_cart() as $values ) {
             $_product = $values['data'];
             if ( !$_product->is_virtual() && !$_product->is_downloadable() ) {
@@ -152,8 +285,30 @@ class Woo_Checkout_For_Digital_Goods_Public {
                         if ( isset( $values['enable'] ) && "on" === $values['enable'] ) {
                             unset($fields['billing'][$key]);
                         } else {
+                            // Convert select options to WC format before adding to $fields['billing']
+                            if ( isset( $values['type'] ) && $values['type'] === 'select' && !empty( $values['options'] ) && is_array( $values['options'] ) ) {
+                                $options = [];
+                                foreach ( $values['options'] as $opt ) {
+                                    if ( is_array( $opt ) && isset( $opt['value'] ) && isset( $opt['label'] ) ) {
+                                        $options[$opt['value']] = $opt['label'];
+                                    }
+                                }
+                                $values['options'] = $options;
+                            }
                             foreach ( $values as $override_k => $override_v ) {
-                                $fields['billing'][$key][$override_k] = $override_v;
+                                // If the key is 'class', set as array
+                                if ( $override_k === 'class' && !empty( $override_v ) ) {
+                                    $fields['billing'][$key]['class'] = ( is_array( $override_v ) ? $override_v : preg_split( '/\\s+/', trim( $override_v ) ) );
+                                } elseif ( $override_k === 'type' && $override_v === 'checkbox' ) {
+                                    // Ensure checkbox uses default value as its checked value and value
+                                    $checkbox_value = ( isset( $values['default'] ) && $values['default'] !== '' ? $values['default'] : '1' );
+                                    $fields['billing'][$key]['type'] = 'checkbox';
+                                    $fields['billing'][$key]['wcdg_custom_checkbox_value'] = $checkbox_value;
+                                    $fields['billing'][$key]['label'] = ( isset( $values['label'] ) ? $values['label'] : $key );
+                                    $fields['billing'][$key]['default'] = $checkbox_value;
+                                } else {
+                                    $fields['billing'][$key][$override_k] = $override_v;
+                                }
                             }
                         }
                     }
@@ -171,6 +326,28 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 unset($fields['billing']['billing_phone']);
                 return $fields;
             }
+            // --- Custom: Set priority for billing fields based on backend order ---
+            $billing_fields_order = get_option( 'wcdg_billing_fields_order', '' );
+            if ( !empty( $billing_fields_order ) && !empty( $fields['billing'] ) ) {
+                $ordered_keys = explode( ',', $billing_fields_order );
+                $priority = 1;
+                foreach ( $ordered_keys as $key ) {
+                    if ( isset( $fields['billing'][$key] ) ) {
+                        $fields['billing'][$key]['priority'] = $priority++;
+                    }
+                }
+                // For any fields not in the saved order, assign a higher priority
+                foreach ( $fields['billing'] as $key => &$field ) {
+                    if ( !isset( $field['priority'] ) ) {
+                        $field['priority'] = $priority++;
+                    }
+                }
+            }
+            // --- End Custom ---
+            uasort( $fields['billing'], function ( $a, $b ) {
+                return ($a['priority'] ?? 99) <=> ($b['priority'] ?? 99);
+            } );
+            return $fields;
         }
         return $fields;
     }
@@ -298,6 +475,9 @@ class Woo_Checkout_For_Digital_Goods_Public {
      * Function for update block address format
      */
     public function wcdg_change_checkout_block_address_format( $formats ) {
+        if ( !is_cart() || !is_checkout() ) {
+            return $formats;
+        }
         // Check if the Checkout Block is being used
         if ( class_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class ) && method_exists( Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class, 'is_checkout_block_default' ) && !CartCheckoutUtils::is_checkout_block_default() ) {
             return $formats;
@@ -342,6 +522,26 @@ class Woo_Checkout_For_Digital_Goods_Public {
         $asset_data_registry = Package::container()->get( AssetDataRegistry::class );
         $default_address_fields = $checkout_fields->get_core_fields();
         if ( !empty( $default_address_fields ) && is_array( $default_address_fields ) ) {
+            // --- Custom: Reorder billing fields based on admin setting ---
+            $billing_fields_order = get_option( 'wcdg_billing_fields_order', '' );
+            if ( !empty( $billing_fields_order ) ) {
+                $ordered_keys = array();
+                foreach ( explode( ',', $billing_fields_order ) as $key ) {
+                    // Remove 'billing_' prefix for block fields
+                    $short_key = preg_replace( '/^billing_/', '', $key );
+                    $ordered_keys[] = $short_key;
+                }
+                $reordered_fields = array();
+                foreach ( $ordered_keys as $key ) {
+                    if ( isset( $default_address_fields[$key] ) ) {
+                        $reordered_fields[$key] = $default_address_fields[$key];
+                        unset($default_address_fields[$key]);
+                    }
+                }
+                // Append any fields not in the saved order (new fields)
+                $default_address_fields = array_merge( $reordered_fields, $default_address_fields );
+            }
+            // --- End Custom ---
             foreach ( $default_address_fields as $key => &$field ) {
                 if ( $key === 'email' ) {
                     continue;
@@ -355,6 +555,11 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 if ( $key !== 'country' && isset( $woo_checkout_field_array[$billing_key]['enable'] ) && 'on' === $woo_checkout_field_array[$billing_key]['enable'] ) {
                     $field['required'] = false;
                     $field['hidden'] = true;
+                }
+                // Set class if provided in backend
+                if ( isset( $woo_checkout_field_array[$billing_key]['class'] ) && !empty( $woo_checkout_field_array[$billing_key]['class'] ) ) {
+                    $class_val = $woo_checkout_field_array[$billing_key]['class'];
+                    $field['class'] = ( is_array( $class_val ) ? $class_val : preg_split( '/\\s+/', trim( $class_val ) ) );
                 }
             }
             unset($field);
@@ -494,7 +699,11 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 </script>
                 <?php 
                 }
-                echo '<a href="' . esc_url( $addtocart_url ) . '" class="' . esc_attr( $button_class ) . '">' . esc_html( $quick_checkout_text ) . '</a>';
+                if ( wp_is_block_theme() ) {
+                    echo '<a href="' . esc_url( $addtocart_url ) . '" class="wp-element-button ' . esc_attr( $button_class ) . '">' . esc_html( $quick_checkout_text ) . '</a>';
+                } else {
+                    echo '<a href="' . esc_url( $addtocart_url ) . '" class="' . esc_attr( $button_class ) . '">' . esc_html( $quick_checkout_text ) . '</a>';
+                }
             }
         }
     }
@@ -518,7 +727,13 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 // run on simple & subscription products
                 if ( $product->is_type( 'simple' ) || $product->is_type( 'subscription' ) ) {
                     $url = $checkout_url . '?add-to-cart=' . $current_product_id;
-                    echo '<a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt">' . esc_html( $quick_checkout_text ) . '</a>';
+                    if ( wp_is_block_theme() ) {
+                        echo '<div class="wp-block-button align-center wc-block-components-product-button">';
+                        echo '<a href="' . esc_url( $url ) . '" class="wp-element-button single_add_to_cart_button button alt">' . esc_html( $quick_checkout_text ) . '</a>';
+                        echo '</div>';
+                    } else {
+                        echo '<a href="' . esc_url( $url ) . '" class=" single_add_to_cart_button button alt">' . esc_html( $quick_checkout_text ) . '</a>';
+                    }
                 }
             }
         }
@@ -593,3 +808,72 @@ class Woo_Checkout_For_Digital_Goods_Public {
     }
 
 }
+
+// Ensure address field priorities are set in default address fields as well
+add_filter( 'woocommerce_default_address_fields', function ( $fields ) {
+    $billing_fields_order = get_option( 'wcdg_billing_fields_order', '' );
+    if ( !empty( $billing_fields_order ) ) {
+        $ordered_keys = explode( ',', $billing_fields_order );
+        $priority = 1;
+        foreach ( $ordered_keys as $key ) {
+            // Remove 'billing_' prefix for default address fields
+            $short_key = preg_replace( '/^billing_/', '', $key );
+            if ( isset( $fields[$short_key] ) ) {
+                $fields[$short_key]['priority'] = $priority++;
+            }
+        }
+        // For any fields not in the saved order, assign a higher priority
+        foreach ( $fields as $key => &$field ) {
+            if ( !isset( $field['priority'] ) ) {
+                $field['priority'] = $priority++;
+            }
+        }
+    }
+    return $fields;
+}, 20 );
+// Custom render for custom checkbox fields to use admin Default Value as value
+add_filter(
+    'woocommerce_form_field_checkbox',
+    function (
+        $field,
+        $key,
+        $args,
+        $value
+    ) {
+        if ( !empty( $args['wcdg_custom_checkbox_value'] ) ) {
+            $checked = checked( $value, $args['wcdg_custom_checkbox_value'], false );
+            $required = ( !empty( $args['required'] ) ? 'aria-required="true" required' : '' );
+            $classes = array(
+                'form-row',
+                'wcdg-' . $key,
+                'validate-required',
+                'checkbox'
+            );
+            if ( !empty( $args['class'] ) ) {
+                $classes = array_merge( $classes, (array) $args['class'] );
+            }
+            $label = esc_html( $args['label'] );
+            if ( !empty( $args['required'] ) ) {
+                $label .= ' <span class="required" aria-hidden="true">*</span>';
+            }
+            $input_id = 'wcdg_' . esc_attr( $key );
+            $input_name = esc_attr( $key );
+            $field = sprintf(
+                '<p class="%s" id="%s_field">' . '<span class="woocommerce-input-wrapper" style="display:flex;align-items:center;gap:6px;">' . '<input type="checkbox" class="input-checkbox %s" name="%s" id="%s" value="%s" %s %s />' . '<label for="%s" class="checkbox" style="margin:0;">%s</label>' . '</span>' . '</p>',
+                esc_attr( implode( ' ', $classes ) ),
+                esc_attr( $key ),
+                esc_attr( implode( ' ', $args['input_class'] ?? [] ) ),
+                $input_name,
+                $input_id,
+                esc_attr( $args['wcdg_custom_checkbox_value'] ),
+                $checked,
+                $required,
+                $input_id,
+                $label
+            );
+        }
+        return $field;
+    },
+    10,
+    4
+);

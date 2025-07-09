@@ -98,6 +98,7 @@ class Woo_Checkout_For_Digital_Goods_Admin {
      * @param string $hook display current page name
      */
     public function enqueue_scripts( $hook ) {
+        // Always enqueue jQuery UI Sortable for the general settings page (drag-and-drop billing fields)
         if ( false !== strpos( $hook, '_page_wcdg' ) ) {
             wp_enqueue_script(
                 $this->plugin_name . '-help-scout-beacon-js',
@@ -128,6 +129,7 @@ class Woo_Checkout_For_Digital_Goods_Admin {
             wp_enqueue_script( 'wp-pointer' );
             wp_enqueue_script( 'jquery-tiptip' );
             wp_enqueue_script( 'jquery-blockui' );
+            // Always enqueue jQuery UI Sortable for drag-and-drop
             wp_enqueue_script( 'jquery-ui-sortable' );
         }
     }
@@ -165,6 +167,14 @@ class Woo_Checkout_For_Digital_Goods_Admin {
             'manage_options',
             'wcdg-quick-checkout',
             array($this, 'wcdg_quick_checkout_page')
+        );
+        add_submenu_page(
+            'dots_store',
+            'Master Settings',
+            'Master Settings',
+            'manage_options',
+            'wcdg-master-settings',
+            array($this, 'wcdg_master_settings_page')
         );
         add_submenu_page(
             'dots_store',
@@ -261,6 +271,7 @@ class Woo_Checkout_For_Digital_Goods_Admin {
         remove_submenu_page( 'dots_store', 'wcdg-quick-checkout' );
         remove_submenu_page( 'dots_store', 'wcdg-get-started' );
         remove_submenu_page( 'dots_store', 'wcdg-import-export' );
+        remove_submenu_page( 'dots_store', 'wcdg-master-settings' );
         remove_submenu_page( 'dots_store', 'wcdg-upgrade-dashboard' );
     }
 
@@ -519,6 +530,13 @@ class Woo_Checkout_For_Digital_Goods_Admin {
                 }
             }
         }
+    }
+
+    /**
+     * Master Settings Page
+     */
+    public function wcdg_master_settings_page() {
+        require_once plugin_dir_path( __FILE__ ) . 'partials/wcdg-master-settings.php';
     }
 
 }
