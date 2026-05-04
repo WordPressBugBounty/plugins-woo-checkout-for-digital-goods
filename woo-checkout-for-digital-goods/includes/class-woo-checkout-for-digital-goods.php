@@ -47,6 +47,14 @@ class Woo_Checkout_For_Digital_Goods {
     protected $version;
 
     /**
+     * Public-facing instance (used for deferred quick checkout hook registration).
+     *
+     * @since 3.8.4
+     * @var Woo_Checkout_For_Digital_Goods_Public|null
+     */
+    protected $plugin_public;
+
+    /**
      * Define the core functionality of the plugin.
      *
      * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -137,6 +145,7 @@ class Woo_Checkout_For_Digital_Goods {
      */
     private function define_public_hooks() {
         $plugin_public = new Woo_Checkout_For_Digital_Goods_Public($this->get_plugin_name(), $this->get_version());
+        $this->plugin_public = $plugin_public;
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
@@ -166,16 +175,13 @@ class Woo_Checkout_For_Digital_Goods {
                 10
             );
             $woo_checkout_button_product = ( isset( $woo_checkout_unserlize_array['wcdg_chk_details'] ) ? $woo_checkout_unserlize_array['wcdg_chk_details'] : '' );
-            if ( !empty( $woo_checkout_button_product ) ) {
-                $this->loader->add_action( 'woocommerce_after_add_to_cart_button', $plugin_public, 'wcdg_add_quick_checkout_after_add_to_cart_product_page' );
-            }
             $woo_checkout_button_shop = ( isset( $woo_checkout_unserlize_array['wcdg_chk_prod'] ) ? $woo_checkout_unserlize_array['wcdg_chk_prod'] : '' );
-            if ( !empty( $woo_checkout_button_shop ) ) {
+            if ( !empty( $woo_checkout_button_product ) || !empty( $woo_checkout_button_shop ) ) {
                 $this->loader->add_action(
-                    'woocommerce_after_shop_loop_item',
-                    $plugin_public,
-                    'wcdg_add_quick_checkout_after_add_to_cart_shop_page',
-                    10
+                    'init',
+                    $this,
+                    'wcdg_register_quick_checkout_display_hooks',
+                    100
                 );
             }
             $this->loader->add_filter(
@@ -200,6 +206,89 @@ class Woo_Checkout_For_Digital_Goods {
                 1
             );
         }
+        if ( function_exists( 'wcdg_quick_view_feature_available' ) && wcdg_quick_view_feature_available() ) {
+            $this->loader->add_action(
+                'init',
+                $this,
+                'wcdg_register_quick_view_display_hooks',
+                101
+            );
+        }
+    }
+
+    /**
+     * Register quick checkout template hooks on init (late) so filters from the theme
+     * or other plugins apply (core loads the plugin on plugins_loaded, before functions.php).
+     *
+     * @since 3.8.4
+     */
+    public function wcdg_register_quick_checkout_display_hooks() {
+        if ( null === $this->plugin_public ) {
+            return;
+        }
+        $woo_checkout_unserlize_array = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+        $woo_checkout_button_product = ( isset( $woo_checkout_unserlize_array['wcdg_chk_details'] ) ? $woo_checkout_unserlize_array['wcdg_chk_details'] : '' );
+        if ( !empty( $woo_checkout_button_product ) ) {
+            $quick_checkout_product_hook = apply_filters( 'wcdg_quick_checkout_product_hook', 'woocommerce_after_add_to_cart_button' );
+            if ( !is_string( $quick_checkout_product_hook ) || '' === $quick_checkout_product_hook ) {
+                $quick_checkout_product_hook = 'woocommerce_after_add_to_cart_button';
+            }
+            $quick_checkout_product_priority = (int) apply_filters( 'wcdg_quick_checkout_product_priority', 10 );
+            add_action( $quick_checkout_product_hook, array($this->plugin_public, 'wcdg_add_quick_checkout_after_add_to_cart_product_page'), $quick_checkout_product_priority );
+        }
+        $woo_checkout_button_shop = ( isset( $woo_checkout_unserlize_array['wcdg_chk_prod'] ) ? $woo_checkout_unserlize_array['wcdg_chk_prod'] : '' );
+        if ( !empty( $woo_checkout_button_shop ) ) {
+            $quick_checkout_shop_hook = apply_filters( 'wcdg_quick_checkout_shop_hook', 'woocommerce_after_shop_loop_item' );
+            if ( !is_string( $quick_checkout_shop_hook ) || '' === $quick_checkout_shop_hook ) {
+                $quick_checkout_shop_hook = 'woocommerce_after_shop_loop_item';
+            }
+            $quick_checkout_shop_priority = (int) apply_filters( 'wcdg_quick_checkout_shop_priority', 10 );
+            add_action( $quick_checkout_shop_hook, array($this->plugin_public, 'wcdg_add_quick_checkout_after_add_to_cart_shop_page'), $quick_checkout_shop_priority );
+        }
+    }
+
+    /**
+     * Register Quick View loop button, modal shell, and Ajax handlers.
+     *
+     * @since 3.8.5
+     */
+    public function wcdg_register_quick_view_display_hooks() {
+        if ( null === $this->plugin_public || !function_exists( 'wcdg_quick_view_feature_available' ) || !wcdg_quick_view_feature_available() ) {
+            return;
+        }
+        if ( !function_exists( 'wcdg_quick_view_enabled_in_settings' ) || !wcdg_quick_view_enabled_in_settings() ) {
+            return;
+        }
+        add_action( 'wp_ajax_wcdg_quick_view', array($this->plugin_public, 'ajax_quick_view_content') );
+        add_action( 'wp_ajax_nopriv_wcdg_quick_view', array($this->plugin_public, 'ajax_quick_view_content') );
+        // Register loop + footer on `wp` — is_shop() / is_product_taxonomy() are not reliable on `init`.
+        add_action( 'wp', array($this, 'wcdg_register_quick_view_loop_and_footer'), 5 );
+    }
+
+    /**
+     * After main query: add shop-loop button and modal markup when context matches.
+     *
+     * @since 3.8.5
+     */
+    public function wcdg_register_quick_view_loop_and_footer() {
+        if ( null === $this->plugin_public || !function_exists( 'wcdg_quick_view_feature_available' ) || !wcdg_quick_view_feature_available() ) {
+            return;
+        }
+        if ( !function_exists( 'wcdg_quick_view_should_load' ) || !wcdg_quick_view_should_load() ) {
+            return;
+        }
+        static $registered = false;
+        if ( $registered ) {
+            return;
+        }
+        $registered = true;
+        $qv_hook = apply_filters( 'wcdg_quick_view_loop_hook', 'woocommerce_after_shop_loop_item' );
+        if ( !is_string( $qv_hook ) || '' === $qv_hook ) {
+            $qv_hook = 'woocommerce_after_shop_loop_item';
+        }
+        $qv_priority = (int) apply_filters( 'wcdg_quick_view_loop_priority', 15 );
+        add_action( $qv_hook, array($this->plugin_public, 'wcdg_shop_loop_quick_view_button'), $qv_priority );
+        add_action( 'wp_footer', array($this->plugin_public, 'wcdg_quick_view_modal_shell'), 5 );
     }
 
     private function define_admin_hooks() {

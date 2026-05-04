@@ -4,11 +4,11 @@ Plugin URI: https://wordpress.org/plugins/woo-checkout-for-digital-goods/
 Author: Thedotstore
 Author URI: https://www.thedotstore.com/
 Contributors: dots, niravcse006
-Stable tag: 3.8.3
+Stable tag: 3.8.4
 Tags: checkout field editor, Checkout for Digital Goods, custom fields, Remove Checkout Fields, WooCommerce checkout
 Requires at least: 5.0
-Tested up to: 6.8.1
-WC tested up to: 9.9.5
+Tested up to: 6.9.4
+WC tested up to: 10.7.0
 Copyright: (c) 2015-2022 Thedotstore all rights reserved (support@thedotstore.com)
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -134,12 +134,6 @@ Quick checkouts and better user experience encourage people to purchase digital 
 <li><strong>Pro Plugin:</strong>  PRE-SALE Questions - <a href ="https://www.thedotstore.com/support/">Click here</a> or <a href ="https://wordpress.org/support/plugin/woo-checkout-for-digital-goods/">Help Document</a></li>
 </ul>
 
-== 🎯 Supercharge Your Store Performance ==
-
-Gain access to <strong>50 expert tips</strong> covering everything from <strong>site speed</strong> and <strong>user experience</strong> to advanced sales strategies, each with impact scores to help you prioritize what truly drives results.
-
-<a href ="https://www.thedotstore.com/?popup_id=76452&utm_source=freeplugin&utm_medium=content&utm_id=ebook1_digital_goods" target="_blank">Download Free eBook</a>
-
 == EXPLORE OUR OTHER PLUGINS TO SUPERCHARGE YOUR WEBSITE: ==
 
 == 👉 Premium WooCommerce Plugins list ==
@@ -254,6 +248,13 @@ Ans: It is compatible with WooCommerce versions 2.6 and higher.
 Automatic updates should work great for you.  As always, though, we recommend backing up your site prior to making any updates just to be sure nothing goes wrong.
 
 == Changelog ==
+= 3.8.4 =
+* [Bug Fix] – Fixed empty checkout fields in plugin settings on first installation.
+* [Enhancement] – Added a filter to customize the position and hook of the Quick Checkout button.
+* [Enhancement] – Improved compatibility with Multi-Step Checkout setups.
+* [Enhancement] – Compatible with WooCommerce 10.7.x
+* [Enhancement] – Compatible with WordPress 6.9.x
+
 = 3.8.3 =
 * [New] – Reset checkout fields settings
 * [Bug Fix] – Billing info not showing in order details (for physical products)

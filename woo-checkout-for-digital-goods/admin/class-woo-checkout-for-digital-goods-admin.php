@@ -108,6 +108,13 @@ class Woo_Checkout_For_Digital_Goods_Admin {
                 false
             );
             wp_enqueue_script(
+                $this->plugin_name . '-select2-full-min',
+                plugin_dir_url( __FILE__ ) . 'js/select2.full.min.js',
+                array('jquery', 'jquery-ui-datepicker'),
+                $this->version,
+                false
+            );
+            wp_enqueue_script(
                 $this->plugin_name . 'freemius_pro',
                 'https://checkout.freemius.com/checkout.min.js',
                 array('jquery'),
@@ -117,15 +124,19 @@ class Woo_Checkout_For_Digital_Goods_Admin {
             wp_enqueue_script(
                 $this->plugin_name . 'wcdg-admin-default-js',
                 plugin_dir_url( __FILE__ ) . 'js/woo-checkout-for-digital-goods-admin.js',
-                array('jquery', 'jquery-ui-dialog'),
+                array('jquery', 'jquery-ui-dialog', $this->plugin_name . '-select2-full-min'),
                 $this->version,
                 false
             );
-            wp_localize_script( $this->plugin_name . 'wcdg-admin-default-js', 'admin_basic_vars', array(
+            $admin_basic_vars = array(
                 'ajaxurl'                 => admin_url( 'admin-ajax.php' ),
                 'dpb_api_url'             => WCDG_STORE_URL,
                 'setup_wizard_ajax_nonce' => wp_create_nonce( 'wizard_ajax_nonce' ),
-            ) );
+            );
+            if ( function_exists( 'wcdg_quick_view_feature_available' ) && wcdg_quick_view_feature_available() ) {
+                $admin_basic_vars['quickViewLocationPlaceholder'] = __( 'Select pages, categories, or tags…', 'woo-checkout-for-digital-goods' );
+            }
+            wp_localize_script( $this->plugin_name . 'wcdg-admin-default-js', 'admin_basic_vars', $admin_basic_vars );
             wp_enqueue_script( 'wp-pointer' );
             wp_enqueue_script( 'jquery-tiptip' );
             wp_enqueue_script( 'jquery-blockui' );

@@ -36,6 +36,20 @@ class Woo_Checkout_For_Digital_Goods_Public {
     private $version;
 
     /**
+     * While rendering quick view Ajax HTML, skip `woocommerce_after_add_to_cart_button` quick checkout (we inject it once in the template).
+     *
+     * @var bool
+     */
+    private static $wcdg_rendering_quick_view_html = false;
+
+    /**
+     * @param bool $active Whether quick view fragment is being rendered.
+     */
+    public static function wcdg_set_rendering_quick_view_html( $active ) {
+        self::$wcdg_rendering_quick_view_html = (bool) $active;
+    }
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -178,6 +192,15 @@ class Woo_Checkout_For_Digital_Goods_Public {
             $this->version,
             'all'
         );
+        if ( function_exists( 'wcdg_quick_view_feature_available' ) && wcdg_quick_view_feature_available() && function_exists( 'wcdg_quick_view_should_load' ) && wcdg_quick_view_should_load() ) {
+            wp_enqueue_style(
+                $this->plugin_name . '-qv',
+                plugin_dir_url( __FILE__ ) . 'css/wcdg-quick-view.css',
+                array(),
+                $this->version,
+                'all'
+            );
+        }
         // Add inline style for hide order notes
         $this->wcdg_hide_order_notes_field_with_block();
     }
@@ -195,6 +218,49 @@ class Woo_Checkout_For_Digital_Goods_Public {
             $this->version,
             false
         );
+        if ( function_exists( 'wcdg_quick_view_feature_available' ) && wcdg_quick_view_feature_available() && function_exists( 'wcdg_quick_view_should_load' ) && wcdg_quick_view_should_load() ) {
+            wp_enqueue_script( 'wc-add-to-cart' );
+            wp_enqueue_script( 'wc-add-to-cart-variation' );
+            wp_enqueue_script(
+                $this->plugin_name . '-qv',
+                plugin_dir_url( __FILE__ ) . 'js/wcdg-quick-view.js',
+                array('jquery', 'wc-add-to-cart', 'wc-add-to-cart-variation'),
+                $this->version,
+                true
+            );
+            $wc_ajax_add_url = '';
+            if ( class_exists( 'WC_AJAX' ) ) {
+                $wc_ajax_add_url = WC_AJAX::get_endpoint( 'add_to_cart' );
+            }
+            $added_notice = __( 'Product has been added to your cart.', 'woo-checkout-for-digital-goods' );
+            // Let WooCommerce mini-cart / fragments update when we trigger `added_to_cart` (same shape as core).
+            if ( wp_script_is( 'wc-add-to-cart', 'registered', true ) && class_exists( 'WC_AJAX' ) && function_exists( 'WC' ) && WC() ) {
+                $wc_add_params = array(
+                    'ajax_url'                => WC()->ajax_url(),
+                    'wc_ajax_url'             => WC_AJAX::get_endpoint( '%%endpoint%%' ),
+                    'i18n_view_cart'          => esc_attr__( 'View cart', 'woo-checkout-for-digital-goods' ),
+                    'cart_url'                => apply_filters( 'woocommerce_add_to_cart_redirect', wc_get_cart_url(), null ),
+                    'is_cart'                 => is_cart(),
+                    'cart_redirect_after_add' => get_option( 'woocommerce_cart_redirect_after_add' ),
+                );
+                wp_localize_script( 'wc-add-to-cart', 'wc_add_to_cart_params', $wc_add_params );
+            }
+            wp_localize_script( $this->plugin_name . '-qv', 'wcdgQuickView', array(
+                'ajaxUrl'            => admin_url( 'admin-ajax.php' ),
+                'nonce'              => wp_create_nonce( 'wcdg_quick_view' ),
+                'wcAjaxAddToCartUrl' => $wc_ajax_add_url,
+                'i18n'               => array(
+                    'close'           => __( 'Close', 'woo-checkout-for-digital-goods' ),
+                    'loading'         => __( 'Loading…', 'woo-checkout-for-digital-goods' ),
+                    'quickView'       => __( 'Quick view', 'woo-checkout-for-digital-goods' ),
+                    'error'           => __( 'Something went wrong. Please try again.', 'woo-checkout-for-digital-goods' ),
+                    'addToCartError'  => __( 'This product could not be added to the cart. Please try again or open the product page.', 'woo-checkout-for-digital-goods' ),
+                    'selectVariation' => __( 'Please select some product options before adding this product to your cart.', 'woo-checkout-for-digital-goods' ),
+                    'addedToCart'     => $added_notice,
+                ),
+                'addedToCartCloseMs' => 2000,
+            ) );
+        }
     }
 
     /**
@@ -602,6 +668,9 @@ class Woo_Checkout_For_Digital_Goods_Public {
      * Function for insert quick checkout button after add to cart button.
      */
     public function wcdg_add_quick_checkout_after_add_to_cart_product_page() {
+        if ( self::$wcdg_rendering_quick_view_html ) {
+            return;
+        }
         $virtual_product = [];
         $is_virtual = [];
         $downloadable_product = [];
@@ -805,6 +874,185 @@ class Woo_Checkout_For_Digital_Goods_Public {
                 echo '<a href="' . esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ) . '" class="button wcdg_delay_account">' . esc_html__( 'My Account', 'woo-checkout-for-digital-goods' ) . '</a>';
             }
         }
+    }
+
+    /**
+     * Quick view + button in classic product loops.
+     *
+     * @since 3.8.5
+     */
+    public function wcdg_shop_loop_quick_view_button() {
+        if ( !function_exists( 'wcdg_quick_view_feature_available' ) || !wcdg_quick_view_feature_available() ) {
+            return;
+        }
+        if ( !function_exists( 'wcdg_quick_view_should_load' ) || !wcdg_quick_view_should_load() ) {
+            return;
+        }
+        global $product;
+        if ( !$product instanceof WC_Product || !$product->is_visible() ) {
+            return;
+        }
+        // Only apply to digital downloadable products
+        if ( !$product->is_downloadable() && !$product->is_virtual() ) {
+            return;
+        }
+        $label = esc_attr__( 'Quick view', 'woo-checkout-for-digital-goods' );
+        if ( wp_get_theme()->get_stylesheet() === 'twentytwentyfour' || wp_get_theme()->get_stylesheet() === 'oceanwp' || function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            printf( '<div class="wp-block-button align-center wc-block-components-product-button"><button type="button" class="button wp-element-button alt wcdg-quick-view-btn" data-product_id="%d" aria-label="%s" aria-haspopup="dialog"><span class="wcdg-quick-view-icon" aria-hidden="true">+</span></button></div>', (int) $product->get_id(), esc_attr( $label ) );
+        } else {
+            printf( '<button type="button" class="button alt wcdg-quick-view-btn" data-product_id="%d" aria-label="%s" aria-haspopup="dialog"><span class="wcdg-quick-view-icon" aria-hidden="true">+</span></button>', (int) $product->get_id(), esc_attr( $label ) );
+        }
+    }
+
+    /**
+     * Modal root markup (one per page).
+     *
+     * @since 3.8.5
+     */
+    public function wcdg_quick_view_modal_shell() {
+        if ( !function_exists( 'wcdg_quick_view_feature_available' ) || !wcdg_quick_view_feature_available() ) {
+            return;
+        }
+        if ( !function_exists( 'wcdg_quick_view_should_load' ) || !wcdg_quick_view_should_load() ) {
+            return;
+        }
+        $close = esc_attr__( 'Close', 'woo-checkout-for-digital-goods' );
+        ?>
+        <div id="wcdg-quick-view-overlay" class="wcdg-qv-overlay" hidden aria-hidden="true">
+            <div class="wcdg-qv-backdrop" role="presentation"></div>
+            <div class="wcdg-qv-dialog woocommerce" role="dialog" aria-modal="true" aria-label="<?php 
+        echo esc_attr__( 'Product quick view', 'woo-checkout-for-digital-goods' );
+        ?>">
+                <button type="button" class="wcdg-qv-close" aria-label="<?php 
+        echo esc_attr( $close );
+        ?>">&times;</button>
+                <div id="wcdg-qv-notice" class="wcdg-qv-notice" role="status" aria-live="polite" hidden></div>
+                <div id="wcdg-qv-body" class="wcdg-qv-body woocommerce wcdg-qv-loading"></div>
+            </div>
+        </div>
+        <?php 
+    }
+
+    /**
+     * Ajax: load quick view HTML for a product.
+     *
+     * @since 3.8.5
+     */
+    public function ajax_quick_view_content() {
+        if ( !function_exists( 'wcdg_quick_view_feature_available' ) || !wcdg_quick_view_feature_available() ) {
+            wp_send_json_error( array(
+                'message' => esc_html__( 'Quick view is not available.', 'woo-checkout-for-digital-goods' ),
+            ), 403 );
+        }
+        check_ajax_referer( 'wcdg_quick_view', 'nonce' );
+        if ( !function_exists( 'wcdg_quick_view_enabled_in_settings' ) || !wcdg_quick_view_enabled_in_settings() ) {
+            wp_send_json_error( array(
+                'message' => esc_html__( 'Quick view is disabled.', 'woo-checkout-for-digital-goods' ),
+            ) );
+        }
+        $product_id = ( isset( $_POST['product_id'] ) ? absint( wp_unslash( $_POST['product_id'] ) ) : 0 );
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $product = wc_get_product( $product_id );
+        if ( !$product || !$product->is_visible() ) {
+            wp_send_json_error( array(
+                'message' => esc_html__( 'Invalid product.', 'woo-checkout-for-digital-goods' ),
+            ) );
+        }
+        $quick_checkout_html = $this->wcdg_build_quick_checkout_html_for_product( $product );
+        $post = get_post( $product_id );
+        if ( !$post ) {
+            wp_send_json_error( array(
+                'message' => esc_html__( 'Invalid product.', 'woo-checkout-for-digital-goods' ),
+            ) );
+        }
+        setup_postdata( $post );
+        wc_setup_product_data( $post );
+        $GLOBALS['product'] = $product;
+        self::wcdg_set_rendering_quick_view_html( true );
+        ob_start();
+        try {
+            wc_get_template(
+                'quick-view-product.php',
+                array(
+                    'product'             => $product,
+                    'quick_checkout_html' => $quick_checkout_html,
+                ),
+                '',
+                trailingslashit( plugin_dir_path( __FILE__ ) ) . 'partials/'
+            );
+            $html = ob_get_clean();
+        } finally {
+            self::wcdg_set_rendering_quick_view_html( false );
+        }
+        wp_reset_postdata();
+        wc_setup_product_data( false );
+        unset($GLOBALS['product']);
+        wp_send_json_success( array(
+            'html' => $html,
+        ) );
+    }
+
+    /**
+     * Quick checkout link HTML for modal (same rules as shop loop quick checkout for simple/subscription).
+     *
+     * @param WC_Product $product Product.
+     * @return string
+     */
+    private function wcdg_build_quick_checkout_html_for_product( WC_Product $product ) {
+        $settings = maybe_unserialize( get_option( 'wcdg_checkout_setting', array() ) );
+        if ( empty( $settings['wcdg_status'] ) || 'on' !== $settings['wcdg_status'] || empty( $settings['wcdg_chk_prod'] ) ) {
+            return '';
+        }
+        if ( !$product->is_type( 'simple' ) && !$product->is_type( 'subscription' ) ) {
+            return '';
+        }
+        $wcdg_chk_btn_label = ( isset( $settings['wcdg_chk_btn_label'] ) ? $settings['wcdg_chk_btn_label'] : '' );
+        $quick_checkout_text = ( !empty( $wcdg_chk_btn_label ) ? $wcdg_chk_btn_label : apply_filters( 'quick_checkout_text', esc_html__( 'Quick Checkout', 'woo-checkout-for-digital-goods' ) ) );
+        $checkout_url = wc_get_checkout_url();
+        $current_product_id = $product->get_id();
+        $eligible = false;
+        if ( isset( $settings['wcdg_chk_on'] ) && 'wcdg_down_virtual' === $settings['wcdg_chk_on'] ) {
+            if ( $product->is_virtual( 'yes' ) || $product->is_downloadable( 'yes' ) ) {
+                $eligible = true;
+            }
+        } elseif ( wcfdg_fs()->is__premium_only() && wcfdg_fs()->can_use_premium_code() && isset( $settings['wcdg_chk_on'] ) && 'wcdg_chk_list' === $settings['wcdg_chk_on'] ) {
+            $cat_flag = 0;
+            $cat_terms = get_the_terms( $current_product_id, 'product_cat' );
+            if ( is_array( $cat_terms ) ) {
+                foreach ( $cat_terms as $c_term ) {
+                    if ( get_term_meta( $c_term->term_id, 'wcdg_chk_category', true ) ) {
+                        $cat_flag = 1;
+                        break;
+                    }
+                }
+            }
+            $tag_flag = 0;
+            $tag_terms = get_the_terms( $current_product_id, 'product_tag' );
+            if ( is_array( $tag_terms ) ) {
+                foreach ( $tag_terms as $t_term ) {
+                    if ( get_term_meta( $t_term->term_id, 'wcdg_chk_tag', true ) ) {
+                        $tag_flag = 1;
+                        break;
+                    }
+                }
+            }
+            if ( (get_post_meta( $current_product_id, '_wcdg_chk_product', true ) || $cat_flag || $tag_flag) && ($product->is_virtual( 'yes' ) || $product->is_downloadable( 'yes' )) ) {
+                $eligible = true;
+            }
+        }
+        if ( !$eligible ) {
+            return '';
+        }
+        $url = $checkout_url . '?add-to-cart=' . $current_product_id;
+        ob_start();
+        if ( wp_is_block_theme() ) {
+            echo '<div class="wp-block-button aligncenter wc-block-components-product-button">';
+            echo '<a href="' . esc_url( $url ) . '" class="wp-element-button single_add_to_cart_button button alt">' . esc_html( $quick_checkout_text ) . '</a>';
+            echo '</div>';
+        } else {
+            echo '<a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt">' . esc_html( $quick_checkout_text ) . '</a>';
+        }
+        return ob_get_clean();
     }
 
 }

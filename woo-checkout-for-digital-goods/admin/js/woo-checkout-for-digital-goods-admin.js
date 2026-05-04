@@ -207,6 +207,44 @@
         // Script for hide & show add to cart btn row
         hideShowFieldsOnToggle( 'input[name="wcdg_enable_cart_btn_label"]', '.wcdg_cart_btn_label_row' );
 
+        // Quick view: show/hide location multiselect (JS only; works after save/refresh)
+        function wcdgSyncQuickViewPagesRow() {
+            var $row = $('#wcdg-quick-view-pages-row');
+            var $cb = $('#wcdg_quick_view_enable');
+            if (!$row.length || !$cb.length) {
+                return;
+            }
+            $row.toggle($cb.prop('checked'));
+        }
+        function wcdgInitQuickViewLocationSelect() {
+            var $el = $('#wcdg_quick_view_pages');
+            if (!$el.length || typeof $.fn.select2 !== 'function') {
+                return;
+            }
+            if (!$('#wcdg-quick-view-pages-row').is(':visible')) {
+                return;
+            }
+            if ($el.hasClass('select2-hidden-accessible')) {
+                return;
+            }
+            var ph = (typeof admin_basic_vars !== 'undefined' && admin_basic_vars.quickViewLocationPlaceholder) ? admin_basic_vars.quickViewLocationPlaceholder : '';
+            $el.select2({
+                width: '100%',
+                placeholder: ph,
+                allowClear: true
+            });
+        }
+        if ($('#wcdg_quick_view_enable').length) {
+            wcdgSyncQuickViewPagesRow();
+            wcdgInitQuickViewLocationSelect();
+            $(document).on('change', '#wcdg_quick_view_enable', function () {
+                wcdgSyncQuickViewPagesRow();
+                if ($(this).is(':checked')) {
+                    wcdgInitQuickViewLocationSelect();
+                }
+            });
+        }
+
         // Ensure jQuery UI Sortable is loaded
         if (typeof $.fn.sortable === 'function' && $('#thwcfd_checkout_fields .ui-sortable').length) {
             // Add a hidden input to store the order if not present
@@ -386,4 +424,5 @@
             }
         });
     }
+
 })(jQuery);

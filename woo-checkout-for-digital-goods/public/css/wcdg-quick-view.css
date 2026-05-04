@@ -1,0 +1,236 @@
+/* Quick view trigger: match compact shop button feel (Quick checkout sibling) */
+.wcdg-quick-view-btn {
+    display: inline-block;
+    padding: 0 0.75em !important;
+    font-weight: 600;
+    font-size: 1.1em;
+    line-height: 2.6em;
+    min-height: 2.2em;
+    margin: 0 0px 0 3px !important;
+}
+
+.wcdg-quick-view-btn .wcdg-quick-view-icon {
+	display: inline-block;
+	line-height: 1;
+}
+#wcdg-quick-view-overlay a.added_to_cart.wc-forward {
+    margin-left: 10px;
+}
+.theme-twentytwentyfour .wcdg-quick-view-btn {
+    font-size: inherit;
+    line-height: inherit;
+    margin: 8px auto 0;
+}
+.wp-block-button.aligncenter.wc-block-components-product-button {
+    display: inline;
+    margin-left: 5px;
+}
+.theme-twentytwentyfour .wcdg-qv-quick-checkout {
+    margin-top: 0px;
+}
+body.theme-oceanwp li.product > a.single_add_to_cart_button.button.alt[href*="checkout"] {
+    display: block;
+    width: fit-content;
+    margin: 10px auto;
+    text-align: center;
+}
+body.theme-oceanwp .button.alt.wcdg-quick-view-btn {
+    display: block;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: fit-content; /* Keeps the button from stretching to full width */
+}
+/* Apply to the parent container */
+body.theme-oceanwp .wp-block-button.align-center.wc-block-components-product-button {
+    text-align: center;
+}
+
+
+body.wcdg-qv-open {
+	overflow: hidden;
+}
+
+.wcdg-qv-overlay[hidden] {
+	display: none !important;
+}
+
+.wcdg-qv-overlay:not([hidden]) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	padding: 16px;
+	box-sizing: border-box;
+}
+
+.wcdg-qv-backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	cursor: pointer;
+}
+
+.wcdg-qv-dialog {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 720px;
+	max-height: min(90vh, 640px);
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.wcdg-qv-notice {
+	margin: 0;
+	padding: 0;
+	flex: 0 0 auto;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.wcdg-qv-notice .woocommerce-message,
+.wcdg-qv-notice .woocommerce-error {
+	margin: 0.75rem 3rem 0.75rem 1rem;
+}
+
+.wcdg-qv-notice[hidden] {
+	display: none !important;
+}
+
+.wcdg-qv-notice--error {
+	border-bottom-color: rgba(178, 34, 34, 0.25);
+}
+
+.wcdg-qv-close {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 2;
+	width: 36px;
+	height: 36px;
+	border: 0;
+	background: transparent;
+	font-size: 28px;
+	line-height: 1;
+	cursor: pointer;
+	color: #444;
+    padding: 0px;
+    text-decoration: none;
+}
+
+.wcdg-qv-body {
+	overflow: auto;
+	padding: 20px 44px 20px 20px;
+	-webkit-overflow-scrolling: touch;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.wcdg-qv-body.wcdg-qv-loading {
+	min-height: 160px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wcdg-qv-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px 20px;
+}
+
+.wcdg-qv-col-image {
+	flex: 0 0 220px;
+	max-width: 100%;
+}
+
+.wcdg-qv-col-image img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.wcdg-qv-col-summary {
+	flex: 1 1 240px;
+	min-width: 0;
+}
+
+.wcdg-qv-product-title {
+	margin: 0 0 10px;
+	font-size: 1.65rem;
+	line-height: 1.25;
+}
+
+.wcdg-qv-price-wrap {
+	margin: 0 0 12px;
+}
+
+.wcdg-qv-price-wrap .wcdg-qv-price {
+	margin: 0;
+}
+
+.wcdg-qv-price del {
+	opacity: 0.65;
+	margin-right: 0.35em;
+}
+
+.wcdg-qv-price ins {
+	background: transparent;
+	text-decoration: none;
+}
+
+.wcdg-qv-bottom-meta {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.wcdg-qv-meta {
+	font-size: 0.85em;
+	margin-bottom: 6px;
+}
+
+.wcdg-qv-bottom-meta .wcdg-qv-meta:last-child {
+	margin-bottom: 0;
+}
+
+.wcdg-qv-meta-label {
+	font-weight: 600;
+	margin-right: 4px;
+}
+
+.wcdg-qv-excerpt {
+	font-size: 0.9em;
+	margin: 10px 0 14px;
+	max-height: 8em;
+	overflow: auto;
+}
+
+.wcdg-qv-add-to-cart form.cart {
+	margin-bottom: 0;
+}
+
+.wcdg-qv-add-to-cart .quantity {
+	margin: 8px;
+}
+
+.wcdg-qv-quick-checkout {
+	margin-top: 12px;
+}
+
+.wcdg-qv-quick-checkout a.button,
+.wcdg-qv-quick-checkout .wp-element-button {
+	display: inline-block;
+	margin: 5px 5px 0 0;
+}
+
+@media (max-width: 600px) {
+	.wcdg-qv-col-image {
+		flex: 1 1 100%;
+	}
+}

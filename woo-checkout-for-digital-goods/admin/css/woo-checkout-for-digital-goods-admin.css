@@ -104,7 +104,7 @@ span.active-status{color:green;}
 #dotsstoremain .wcdg-main-left-section .wcdg-tab li:last-child{border-right:0;}
 #dotsstoremain .wcdg-main-left-section .wcdg-tab li a{text-decoration:none;font-size:16px;}
 #dotsstoremain .select2-container{width:100%!important;max-width:450px;}
-#dotsstoremain .select2-container--default .select2-selection--multiple .select2-selection__clear{margin-right:2px;padding:0px 6px;background:var(--dots-remove);color:white;border-radius:5px;font-size:18px;}
+#dotsstoremain .select2-container--default .select2-selection--multiple .select2-selection__clear{margin-right:2px;padding:0px 6px;color:var(--dots-remove);border-radius:5px;font-size:18px;display: none;}
 .wcdg-main-table{box-sizing:border-box;display:inline-block;float:left;width:100%;}
 a#fee-delete-field{font-size:25px;vertical-align:middle;}
 .wcdg-main-table table.table-outer{width:100%;border-collapse:collapse;}
@@ -290,7 +290,9 @@ a#fee-delete-field{font-size:25px;vertical-align:middle;}
     font-size: 18px;
     vertical-align: baseline;
 }
-
+#dotsstoremain form.wcdg_chk_form.wcdg_tag_form .wcdg_update {
+    border-left-color: #ffbc3c !important;
+}
 /* Upgrade to pro modal */
 @-webkit-keyframes wcdgPopupEffect{
     0%{top:-8%;}

@@ -43,6 +43,7 @@ if ( isset( $_POST['submit_setting'] ) ) {
             FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             FILTER_REQUIRE_ARRAY
         );
+        $get_wcdg_quick_view_enable = filter_input( INPUT_POST, 'wcdg_quick_view_enable', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
         $get_wcdg_allow_additional_field_update_flag = filter_input( INPUT_POST, 'wcdg_allow_additional_field_update_flag', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
         $get_wcdg_billing_fields_order = ( isset( $_POST['wcdg_billing_fields_order'] ) ? sanitize_text_field( $_POST['wcdg_billing_fields_order'] ) : '' );
         $wcdg_custom_fields_data = ( isset( $_POST['wcdg_custom_fields_data'] ) ? $_POST['wcdg_custom_fields_data'] : array() );
@@ -107,6 +108,9 @@ if ( isset( $_POST['submit_setting'] ) ) {
         }
 
         $general_setting_data['wcdg_status'] = ( !empty( $get_wcdg_status ) ? sanitize_text_field( $get_wcdg_status ) : '' );
+        if ( function_exists( 'wcdg_apply_wc_default_first_last_name_classes' ) ) {
+            $merged_fields = wcdg_apply_wc_default_first_last_name_classes( $merged_fields );
+        }
         $general_setting_data['wcdg_chk_field'] = $merged_fields;
         $general_setting_data['wcdg_chk_order_note'] = ( !empty( $get_wcdg_chk_order_note ) ? sanitize_text_field( $get_wcdg_chk_order_note ) : '' );
         $general_setting_data['wcdg_chk_btn_label'] = ( !empty( $get_wcdg_chk_btn_label ) ? sanitize_text_field( $get_wcdg_chk_btn_label ) : '' );
@@ -114,12 +118,21 @@ if ( isset( $_POST['submit_setting'] ) ) {
         $general_setting_data['wcdg_chk_on'] = ( !empty( $get_wcdg_chk_on ) ? sanitize_text_field( $get_wcdg_chk_on ) : 'wcdg_down_virtual' );
         $general_setting_data['wcdg_user_role_field'] = ( !empty( $get_wcdg_user_role_field ) ? array_map( 'sanitize_text_field', $get_wcdg_user_role_field ) : '' );
         $general_setting_data['wcdg_allow_additional_field_update_flag'] = ( !empty( $get_wcdg_allow_additional_field_update_flag ) ? sanitize_text_field( $get_wcdg_allow_additional_field_update_flag ) : '' );
+        if ( function_exists( 'wcdg_quick_view_feature_available' ) && wcdg_quick_view_feature_available() ) {
+            $general_setting_data['wcdg_quick_view_enable'] = ( !empty( $get_wcdg_quick_view_enable ) ? sanitize_text_field( $get_wcdg_quick_view_enable ) : '' );
+            $qv_pages_raw = ( isset( $_POST['wcdg_quick_view_pages'] ) ? wp_unslash( $_POST['wcdg_quick_view_pages'] ) : array() );
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            $general_setting_data['wcdg_quick_view_pages'] = ( function_exists( 'wcdg_quick_view_sanitize_location_tokens' ) ? wcdg_quick_view_sanitize_location_tokens( $qv_pages_raw ) : array() );
+        }
         update_option( 'wcdg_checkout_setting', $general_setting_data );
         // Save billing fields order separately
         update_option( 'wcdg_billing_fields_order', $get_wcdg_billing_fields_order );
     }
 }
 $wcdg_general_setting = maybe_unserialize( get_option( 'wcdg_checkout_setting' ) );
+if ( empty( $wcdg_general_setting['wcdg_chk_field'] ) && function_exists( 'wcdg_get_default_settings' ) ) {
+    $wcdg_general_setting = wcdg_get_default_settings();
+}
 $wcdg_status = ( isset( $wcdg_general_setting['wcdg_status'] ) && !empty( $wcdg_general_setting['wcdg_status'] ) ? 'checked' : '' );
 $wcdg_ch_field = ( isset( $wcdg_general_setting['wcdg_chk_field'] ) && !empty( $wcdg_general_setting['wcdg_chk_field'] ) ? $wcdg_general_setting['wcdg_chk_field'] : array() );
 $wcdg_chk_order_note = ( isset( $wcdg_general_setting['wcdg_chk_order_note'] ) && !empty( $wcdg_general_setting['wcdg_chk_order_note'] ) ? 'checked' : '' );
@@ -127,6 +140,9 @@ $wcdg_chk_btn_label = ( isset( $wcdg_general_setting['wcdg_chk_btn_label'] ) && 
 $wcdg_cart_btn_label = ( isset( $wcdg_general_setting['wcdg_cart_btn_label'] ) && !empty( $wcdg_general_setting['wcdg_cart_btn_label'] ) ? $wcdg_general_setting['wcdg_cart_btn_label'] : '' );
 $wcdg_chk_on = ( isset( $wcdg_general_setting['wcdg_chk_on'] ) && !empty( $wcdg_general_setting['wcdg_chk_on'] ) ? $wcdg_general_setting['wcdg_chk_on'] : 'wcdg_down_virtual' );
 $wcdg_user_role_field = ( isset( $wcdg_general_setting['wcdg_user_role_field'] ) && !empty( $wcdg_general_setting['wcdg_user_role_field'] ) ? $wcdg_general_setting['wcdg_user_role_field'] : '' );
+$wcdg_quick_view_ui_unlocked = function_exists( 'wcdg_quick_view_feature_available' ) && wcdg_quick_view_feature_available();
+$wcdg_quick_view_enabled = isset( $wcdg_general_setting['wcdg_quick_view_enable'] ) && 'on' === $wcdg_general_setting['wcdg_quick_view_enable'];
+$wcdg_quick_view_pages = ( isset( $wcdg_general_setting['wcdg_quick_view_pages'] ) && is_array( $wcdg_general_setting['wcdg_quick_view_pages'] ) ? $wcdg_general_setting['wcdg_quick_view_pages'] : array() );
 $wcdg_allow_additional_field_update_flag = ( isset( $wcdg_general_setting['wcdg_allow_additional_field_update_flag'] ) && !empty( $wcdg_general_setting['wcdg_allow_additional_field_update_flag'] ) ? 'checked' : '' );
 // Get saved billing fields order
 $wcdg_billing_fields_order = get_option( 'wcdg_billing_fields_order', '' );
@@ -280,8 +296,30 @@ foreach ( $display_keys as $wcdg_field_k ) {
     }
     $wcdg_field_v = $wcdg_fields[$wcdg_field_k];
     $label = ( isset( $wcdg_field_v['label'] ) ? $wcdg_field_v['label'] : '' );
-    $class = ( isset( $wcdg_field_v['class'] ) && !empty( $wcdg_field_v['class'] ) ? $wcdg_field_v['class'] : 'form-row' );
-    $placeholder = ( isset( $wcdg_field_v['placeholder'] ) ? $wcdg_field_v['placeholder'] : '' );
+    $class = ( isset( $wcdg_field_v['class'] ) ? $wcdg_field_v['class'] : '' );
+    $trim_class = ( is_string( $class ) ? trim( $class ) : '' );
+    // First / last name: use WooCommerce default row classes when unset or generic.
+    if ( in_array( $wcdg_field_k, array('billing_first_name', 'billing_last_name'), true ) && ('' === $trim_class || 'form-row' === $trim_class) && isset( $wcdg_default_fields[$wcdg_field_k]['class'] ) && function_exists( 'wcdg_format_wc_address_field_class' ) ) {
+        $class = wcdg_format_wc_address_field_class( $wcdg_default_fields[$wcdg_field_k]['class'] );
+    } elseif ( '' === $trim_class ) {
+        $class = 'form-row';
+    }
+    // Saved checkout placeholder (input value); empty means use WooCommerce / plugin defaults on storefront.
+    $saved_placeholder = ( isset( $wcdg_field_v['placeholder'] ) ? $wcdg_field_v['placeholder'] : '' );
+    // Gray hint in this settings column only (HTML placeholder attr — not the stored value).
+    $placeholder_hint = '';
+    if ( isset( $wcdg_default_fields[$wcdg_field_k] ) ) {
+        if ( !empty( $wcdg_default_fields[$wcdg_field_k]['placeholder'] ) ) {
+            $placeholder_hint = $wcdg_default_fields[$wcdg_field_k]['placeholder'];
+        } elseif ( function_exists( 'wcdg_get_default_settings' ) ) {
+            $wcdg_field_defaults = wcdg_get_default_settings();
+            if ( isset( $wcdg_field_defaults['wcdg_chk_field'][$wcdg_field_k]['placeholder'] ) ) {
+                $placeholder_hint = $wcdg_field_defaults['wcdg_chk_field'][$wcdg_field_k]['placeholder'];
+            }
+        }
+    } elseif ( '' === $saved_placeholder ) {
+        $placeholder_hint = __( 'Optional; shown on checkout', 'woo-checkout-for-digital-goods' );
+    }
     $excluded = false;
     if ( isset( $wcdg_field_v['enable'] ) ) {
         $excluded = !empty( $wcdg_field_v['enable'] );
@@ -328,7 +366,9 @@ foreach ( $display_keys as $wcdg_field_k ) {
                                 <td class="td_placeholder"><input type="text" name="wcdg_chk_field[<?php 
     echo esc_attr( $wcdg_field_k );
     ?>][placeholder]" value="<?php 
-    echo esc_attr( $placeholder );
+    echo esc_attr( $saved_placeholder );
+    ?>" placeholder="<?php 
+    echo esc_attr( $placeholder_hint );
     ?>" <?php 
     echo ( !isset( $wcdg_default_fields[$wcdg_field_k] ) ? ' disabled="disabled"' : '' );
     ?> /></td>
@@ -397,8 +437,77 @@ esc_html_e( 'Select a user role', 'woo-checkout-for-digital-goods' );
                         </tr>
                         <?php 
 ?>
-                    
-                    
+                    <?php 
+if ( !empty( $wcdg_quick_view_ui_unlocked ) ) {
+    ?>
+                    <tr valign="top">
+                        <th class="titledesc" scope="row">
+                            <label for="wcdg_quick_view_enable">
+                                <?php 
+    esc_html_e( 'Quick view', 'woo-checkout-for-digital-goods' );
+    ?>
+                                <?php 
+    echo wp_kses( wc_help_tip( esc_html__( 'Show a + button on product listings to open a compact popup with product details and add to cart.', 'woo-checkout-for-digital-goods' ) ), array(
+        'span' => $allowed_tooltip_html,
+    ) );
+    ?>
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label class="switch">
+                                <input type="checkbox" id="wcdg_quick_view_enable" name="wcdg_quick_view_enable" value="on" <?php 
+    checked( $wcdg_quick_view_enabled );
+    ?>>
+                                <div class="slider round"></div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr valign="top" id="wcdg-quick-view-pages-row" class="wcdg-quick-view-pages-row">
+                        <th class="titledesc" scope="row">
+                            <label for="wcdg_quick_view_pages"><?php 
+    esc_html_e( 'Show quick view on', 'woo-checkout-for-digital-goods' );
+    ?></label>
+                            <?php 
+    echo wp_kses( wc_help_tip( esc_html__( 'Choose WordPress pages, product categories (with products), or product tags (used on products). The + button appears only in classic WooCommerce product loops on those views.', 'woo-checkout-for-digital-goods' ) ), array(
+        'span' => $allowed_tooltip_html,
+    ) );
+    ?>
+                        </th>
+                        <td class="forminp">
+                            <?php 
+    require __DIR__ . '/wcdg-quick-view-location-select.php';
+    ?>
+                        </td>
+                    </tr>
+                    <?php 
+} else {
+    ?>
+                    <tr valign="top">
+                        <th class="titledesc" scope="row">
+                            <label>
+                                <?php 
+    esc_html_e( 'Quick view', 'woo-checkout-for-digital-goods' );
+    ?>
+                                <span class="wcdg-pro-label"></span>
+                                <?php 
+    echo wp_kses( wc_help_tip( esc_html__( 'Show a + button on product listings to open a compact popup with product details and add to cart. Available in the premium version.', 'woo-checkout-for-digital-goods' ) ), array(
+        'span' => $allowed_tooltip_html,
+    ) );
+    ?>
+                            </label>
+                        </th>
+                        <td class="forminp">
+                            <label class="switch">
+                                <input type="checkbox" id="wcdg_quick_view_enable" disabled="disabled" class="wcdg_read_only" value="on" <?php 
+    checked( $wcdg_quick_view_enabled );
+    ?>>
+                                <div class="slider round"></div>
+                            </label>
+                        </td>
+                    </tr>
+                    <?php 
+}
+?>
                     <tr valign="top" class="wcdg_chk_btn_label_row wcdg-inner-setting">
                         <th class="titledesc" scope="row">
                             <label for="perfect_match_title">
@@ -443,7 +552,7 @@ esc_html_e( 'To manually select products, categories, or tags, ', 'woo-checkout-
                         </tr>
                         <?php 
 ?>
-                    <tr valign="top" class="wcdg_cart_btn_label_row wcdg-inner-setting">
+                    <tr valign="top" class="wcdg_cart_btn_label_row wcdg-inner-setting" style="display: none;">
                         <th class="titledesc" scope="row">
                             <label for="perfect_match_title">
                                 <?php 
